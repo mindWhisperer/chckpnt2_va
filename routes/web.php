@@ -1,14 +1,45 @@
 <?php
-
+use App\Http\Controllers\EndpointController;
+use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PublicController;
+use App\Http\Controllers\UserAuthController;
+use App\Middlewares\ApiMiddleware;
+use App\Middlewares\PanelMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\Controller::class, 'index']);
+Route::prefix('/')
+    ->group(function () {
+        Route::get('/', [PublicController::class, 'index'])->name('home');
+        Route::get('detail/{id}', [PublicController::class, 'detail'])->name('detail');
+        Route::get('stalice', [PublicController::class, 'bestOff'])->name('best-of');
 
-Route::get('/detail/{id}', [\App\Http\Controllers\Controller::class, 'detail']);
+        Route::get('login', [UserAuthController::class, 'login'])->name('login');
+        Route::get('logout', [UserAuthController::class, 'logout'])->name('logout');
+        Route::get('register', [UserAuthController::class, 'register'])->name('register');
 
-Route::get('/stalice', [\App\Http\Controllers\Controller::class, 'stalice']);
+        Route::prefix('panel')->controller(PanelController::class)
+            ->middleware([PanelMiddleware::class])
+            ->group(function () {
+                Route::get('/', 'panel')->name('panel');
+                Route::get('profil', 'profile')->name('profile');
+                Route::get('pridat', 'addBook')->name('add-book');
+                Route::get('uprava/{id}', 'editBook')
+                    ->where('id', '[0-9]+')
+                    ->name('edit-book');
+            });
+    });
 
-Route::get('/pridat', [\App\Http\Controllers\Controller::class, 'pridat']);
-
-Route::get('/uprava', [\App\Http\Controllers\Controller::class, 'uprava']);
-
+Route::prefix('/api/v1')->controller(EndpointController::class)
+    ->middleware([ApiMiddleware::class])
+    ->group(function () {
+        Route::post('login', 'login')->withoutMiddleware([ApiMiddleware::class]);
+        Route::post('logout', 'logout')->withoutMiddleware([ApiMiddleware::class]);
+        Route::options('passcheck', 'checkPassword')->withoutMiddleware([ApiMiddleware::class]);
+    //create
+        Route::post('/', 'create');
+        //read
+        Route::get('/', 'getAll');
+        Route::get('/{id}','get')->where('id','[0-9]+');
+        //delete
+        Route::delete('/{id}', 'delete')->where('id', '[0-9]+');
+    });
