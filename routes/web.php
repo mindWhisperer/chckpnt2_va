@@ -40,6 +40,8 @@ Route::prefix('/api/v1')->controller(EndpointController::class)
         //read
         Route::get('/', 'getAll');
         Route::get('/{id}','get')->where('id','[0-9]+');
+        //update
+        Route::put('/{id}', 'update')->where('id','[0-9]+');
         //delete
         Route::delete('/{id}', 'delete')->where('id', '[0-9]+');
     });
