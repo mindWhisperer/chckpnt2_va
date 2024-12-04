@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/')
     ->group(function () {
         Route::get('/', [PublicController::class, 'index'])->name('home');
-        Route::get('detail/{id}', [PublicController::class, 'detail'])->name('detail');
+        Route::get('detail/{id}', [PublicController::class, 'detail'])->where('id','[0-9]+')->name('detail');
         Route::get('stalice', [PublicController::class, 'bestOff'])->name('best-of');
 
         Route::get('login', [UserAuthController::class, 'login'])->name('login');
@@ -34,6 +34,7 @@ Route::prefix('/api/v1')->controller(EndpointController::class)
     ->group(function () {
         Route::post('login', 'login')->withoutMiddleware([ApiMiddleware::class]);
         Route::post('logout', 'logout')->withoutMiddleware([ApiMiddleware::class]);
+        Route::post('register','register')->withoutMiddleware([ApiMiddleware::class]);
         Route::options('passcheck', 'checkPassword')->withoutMiddleware([ApiMiddleware::class]);
     //create
         Route::post('/', 'create');

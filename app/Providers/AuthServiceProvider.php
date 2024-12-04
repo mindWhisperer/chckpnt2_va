@@ -31,18 +31,21 @@ class AuthServiceProvider
         $this->validateToken(token: $token, data: $decoded);
         return json_decode(json_encode($decoded), true) ?? [];
     }
-    function validateToken(string $token, &$data = null): bool
+    function validateToken(string|null $token, &$data = null): bool
     {
-        $token = $this->parseTokenBearer($token);
+        if(empty($token)){
+            return false;
+        }
         try {
+            $token = $this->parseTokenBearer($token);
             $data = JWT::decode($token, new Key(
                 keyMaterial: $this->key,
                 algorithm: self::algo,
             ));
+            return ! ($data->ttl < time());
         } catch (\Exception $e) {
             return false;
         }
-        return true;
     }
 
     function createPassword(string $password): string

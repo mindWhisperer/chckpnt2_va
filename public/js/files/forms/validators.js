@@ -1,4 +1,4 @@
-import {isValidUrl} from "../helpers.js";
+import {isValidImageUrl} from "../helpers.js";
 /**
  * @param {{email: string, password: string}} data
  * @returns {[string, string][]}
@@ -32,7 +32,7 @@ export const editValidator = (data) => {
     }
     if (!data?.image?.trim?.()) {
         errors.push(['image', 'Nebol nastavený obrázok.']);
-    } else if (!isValidUrl(data.image)) {
+    } else if (!isValidImageUrl(data.image)) {
         errors.push(['image', 'Url obrázku nemá správny tvar.']);
     }
     if (!data?.genre?.trim?.()) {

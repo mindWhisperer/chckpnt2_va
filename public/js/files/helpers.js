@@ -7,7 +7,7 @@ export const getCookies = () => Object.fromEntries(
             ),
     );
 
-export const isValidUrl = (url) => {
+export const isValidImageUrl = (url) => {
     try {
         new URL(url);
         return (url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null);

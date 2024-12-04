@@ -114,7 +114,7 @@ readonly class EndpointController
             "email" => $user->email,
             //"role" => $user->role,
             "role" => 9,
-        ]);
+        ], Constants::AUTH_TOKEN_TTL);
         return response([
             "code" => 200,
             "message" => "Login success",
@@ -123,9 +123,7 @@ readonly class EndpointController
         ], 200)
             ->header('Content-Type', 'application/json')
             // $name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null
-            ->cookie(Constants::AUTH_NAME, $token, 3600, null, null, null,
-                false, // bolo potrebné vypnúť httpOnly aby sa dali čítať cookies pomocou JS
-                false, null);
+            ->cookie(Constants::AUTH_NAME, $token, Constants::AUTH_TOKEN_TTL);
     }
 
     public function logout()

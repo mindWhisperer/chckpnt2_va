@@ -21,7 +21,7 @@ export const formDataCollector = (form, endpoint, validator, callback) => {
             return callback?.(form, result);
         }
         const [_endpoint, _method] = endpoint.split(':');
-        Fetch[_method || "post"](_endpoint, data).then(response => {
+        Fetch[_method?.toLocaleLowerCase() || "post"](_endpoint, data).then(response => {
             if (formErrorsRenderer(form, response))
                 return;
             if (response.success)

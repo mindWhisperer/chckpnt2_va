@@ -15,11 +15,8 @@ class Roles
     public static function isLogged(): bool
     {
         $request = app(Request::class);
-
+        $authService=app(AuthServiceProvider::class);
         $token = $request->cookies->get(Constants::AUTH_NAME);
-
-        $service = app(AuthServiceProvider::class);
-
-        return $token && $service->validateToken($token,$data) && $data?->ttl >= time();
+        return $authService->validateToken($token);
     }
 }
