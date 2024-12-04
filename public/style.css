@@ -209,12 +209,12 @@ footer {
 }
 
 .top-menu-dropdown {
-    input#dropdown {
+    & input#dropdown {
         display: none;
 
         &:checked {
             + label {
-                background-color: var(--bs-primary);
+                background-color: #FAF0E6;
             }
             ~ div {
                 right: 0;

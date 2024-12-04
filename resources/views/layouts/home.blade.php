@@ -11,7 +11,7 @@
                     <a href="{{route('detail',['id' => $book->id])}}" class="btn btn-outline-secondary">Čítať</a>
                     <h2>{{$book->name}}</h2>
                     <p>
-                        {{\Illuminate\Support\Str::limit($book->description, 190, '...')}}
+                        {{\Illuminate\Support\Str::limit($book->description, 190)}}
                     </p>
                 </div>
 
