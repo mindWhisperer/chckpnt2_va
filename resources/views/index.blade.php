@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang=sk>
 <meta charset=UTF-8>
-    <title>@yield('title') - {{PROJECT_NAME}}</title>
-    @include('partials/head')
+<title>@yield('title') - {{PROJECT_NAME}}</title>
+@include('partials.head')
 <header>
-    @include('partials/menu')
+    @include('partials.menu')
 </header>
 
 @section('content')
 
 @show
 
-@include('partials/footer')
-
-
-</html>
+@include('partials.footer')

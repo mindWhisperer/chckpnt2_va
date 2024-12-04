@@ -3,33 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Constants;
-use App\Providers\AuthServiceProvider;
+use App\Providers\AuthService;
 use App\Providers\BookServiceProvider;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Request;
 
 readonly class EndpointController
 {
     private BookServiceProvider $bookProvider;
-    private \Illuminate\Database\Query\Builder $table;
+    private Builder $table;
 
     public function __construct()
     {
         $this->bookProvider = app(BookServiceProvider::class);
-        $this->table=DB::table('users');
+        $this->table = DB::table('users');
     }
 
-    public function getAll(): array
+    public function getAll(): \Illuminate\Support\Collection|array
     {
         return $this->bookProvider->readAll() ?? [];
     }
 
     public function get($id)
     {
-        return $this->bookProvider->read(id:$id) ?? [];
+        return $this->bookProvider->read(id: $id) ?? [];
     }
 
-    public function create(Request $request):array
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    public function create(Request $request): array
     {
         //return $request->get('data');
 
@@ -46,7 +52,13 @@ readonly class EndpointController
         ];
     }
 
-    public function update(Request $request, string $id):array
+    /**
+     * @param Request $request
+     * @param string $id
+     *
+     * @return array
+     */
+    public function update(Request $request, string $id): array
     {
         $data = $request->get('data');
         $success = $this->bookProvider->update(id: $id, data: $data);
@@ -57,7 +69,12 @@ readonly class EndpointController
         ];
     }
 
-    public function delete(string $id):array
+    /**
+     * @param string $id
+     *
+     * @return array
+     */
+    public function delete(string $id): array
     {
         $success = $this->bookProvider->delete(id: $id);
         return [
@@ -67,16 +84,19 @@ readonly class EndpointController
         ];
     }
 
-    public function register(string $email, string $password):array
+    public function register(string $email, string $password): array
     {
         return [];
     }
 
     public function login(Request $request)
     {
+
         $data = $request->get('data');
+
         $email = $data["email"];
         $password = $data["password"];
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return [
                 "code" => 401,
@@ -91,7 +111,9 @@ readonly class EndpointController
                 "success" => false,
             ];
         }
+
         $user = $this->table->where('email', $email)->first();
+
         if (!$user) {
             return [
                 "code" => 401,
@@ -100,7 +122,9 @@ readonly class EndpointController
                 "success" => false,
             ];
         }
-        $auth = app(AuthServiceProvider::class);
+
+        /** @type AuthService $auth */
+        $auth = app(AuthService::class);
         if (!$auth->validatePassword($password, $user->password)) {
             return [
                 "code" => 401,
@@ -109,12 +133,14 @@ readonly class EndpointController
                 "success" => false,
             ];
         }
+
         $token = $auth->createToken([
             "name" => $user->name,
             "email" => $user->email,
             //"role" => $user->role,
             "role" => 9,
         ], Constants::AUTH_TOKEN_TTL);
+
         return response([
             "code" => 200,
             "message" => "Login success",
@@ -122,8 +148,7 @@ readonly class EndpointController
             Constants::AUTH_NAME => $token,
         ], 200)
             ->header('Content-Type', 'application/json')
-            // $name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null
-            ->cookie(Constants::AUTH_NAME, $token, Constants::AUTH_TOKEN_TTL);
+            ->cookie(Constants::AUTH_NAME, $token, Constants::AUTH_TOKEN_TTL / 60);
     }
 
     public function logout()
@@ -139,5 +164,5 @@ readonly class EndpointController
     {
         return [$password];
     }
-}
 
+}

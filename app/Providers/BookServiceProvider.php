@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 class BookServiceProvider
 {
     private $table;
+
     public function __construct()
     {
         $this->table = DB::table('books');

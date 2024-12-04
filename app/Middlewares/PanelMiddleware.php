@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Middlewares;
 
 use App\Helpers\Constants;
-use App\Providers\AuthServiceProvider;
+use App\Providers\AuthService;
 use Symfony\Component\HttpFoundation\Request;
 
 class PanelMiddleware
@@ -10,11 +11,13 @@ class PanelMiddleware
     public function handle(Request $request, \Closure $next)
     {
         $token = $request->cookies->get(Constants::AUTH_NAME);
-        $service = app(AuthServiceProvider::class);
+        /** @type AuthService $service */
+        $service = app(AuthService::class);
 
-        if (!$token || !$service->validateToken($token, $data) || $data?->ttl < time()) {
+        if (!$service->validateToken($token)) {
             return redirect()->route('login')->cookie(Constants::AUTH_NAME, '', -1);
         }
+
         $response = $next($request);
         return $response;
     }

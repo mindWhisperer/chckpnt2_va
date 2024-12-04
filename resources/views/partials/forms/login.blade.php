@@ -9,7 +9,9 @@
         <input type="password" name="password" class="form-control" id="inputPassword4">
     </div>
 </div>
+
 <div class="form-error-container"></div>
+
 <div class="col-12">
     <button class="btn btn-primary">Prihlásiť</button>
 </div>

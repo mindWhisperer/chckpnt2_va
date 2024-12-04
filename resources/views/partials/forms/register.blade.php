@@ -13,6 +13,7 @@
         <input type="password" class="form-control" id="inputPassword4a">
     </div>
 </div>
+
 <div class="col-12">
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck">
@@ -21,6 +22,7 @@
         </label>
     </div>
 </div>
+
 <div class="col-12">
     <button class="btn btn-primary">Registrovať</button>
 </div>

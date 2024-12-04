@@ -1,4 +1,5 @@
 export class Fetch {
+
     static #apiUrl = '';
 
     static setApiUrl(url) {
@@ -11,25 +12,27 @@ export class Fetch {
         return this.#fetch(endpoint);
     }
 
-    static post(endpoint,data){
-        return this.#fetch(endpoint,data,"POST");
+    static post(endpoint, data) {
+        return this.#fetch(endpoint, data, "POST");
     }
 
     static options(endpoint) {
-        return this.#fetch(endpoint,"OPTIONS");
+        return this.#fetch(endpoint, null, "OPTIONS");
     }
 
-    static put(endpoint,data) {
-        return this.#fetch(endpoint,data,"PUT");
+    static put(endpoint, data) {
+        return this.#fetch(endpoint, data, "PUT");
     }
 
     static delete(endpoint) {
-        return this.#fetch(endpoint,null,"DELETE");
+        return this.#fetch(endpoint, null, "DELETE");
     }
 
     static async #fetch(url, data = null, method = "GET") {
+
         if (url === undefined)
             throw new Error('fetch url must be provided.');
+
         const headers = {
             "Content-Type": "application/json",
         };
@@ -41,3 +44,4 @@ export class Fetch {
         }).then(response => response.json());
     }
 }
+

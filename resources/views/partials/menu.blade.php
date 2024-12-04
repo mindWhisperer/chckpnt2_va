@@ -4,7 +4,7 @@
         <div class="navbar-nav btn-group">
             <a class="nav-link" href="{{route('home')}}">Novinky</a>
             <a class="nav-link" href="{{route('best-of')}}">Stálice</a>
-            {{--IF_LOGGED--}}
+            {{-- IF_LOGGED --}}
             @if(\App\Helpers\Roles::isLogged())
                 <div class="top-menu-dropdown">
                     <input type="checkbox" id="dropdown">
@@ -17,6 +17,7 @@
                         <a class="dropdown-item" href="{{route('logout')}}">Odhlásiť</a>
                     </div>
                 </div>
+
                 {{-- IF_NOT_LOGGED --}}
             @else
                 <a class="btn btn-success mb-0" href="{{route('login')}}">Prihlásiť</a>

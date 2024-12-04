@@ -1,15 +1,15 @@
 import {Fetch} from "./files/connector.js";
 import {createValidator, editValidator, loginValidator} from "./files/forms/validators.js";
-import {formDataCollector} from "./files/forms/form-data-collector.js";
+import {formDataCollector} from "./files/forms/form-data-colletor.js";
 
 Fetch.setApiUrl("/api/v1/");
 
-//login
+// login
 formDataCollector(
     document.querySelector('form#login'),
-    'login:post',loginValidator,
-    (form,result) => {
-        if(result.success)
+    'login:post', loginValidator,
+    (form, result) => {
+        if (result.success)
             window.location.href = '/';
     });
 
@@ -22,6 +22,7 @@ formDataCollector(
         if (result.success)
             window.location.href = '/detail/' + id;
     });
+
 // create
 formDataCollector(
     document.querySelector('form#create'),
@@ -30,6 +31,7 @@ formDataCollector(
         if (result.success)
             window.location.href = '/detail/' + result.data.id;
     });
+
 // delete
 document.querySelector('button#delete')?.addEventListener("click", async (e) => {
     e.preventDefault();

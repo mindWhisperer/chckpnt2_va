@@ -6,7 +6,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Hash;
 
-class AuthServiceProvider
+class AuthService
 {
 
     private readonly string $key;
@@ -14,6 +14,7 @@ class AuthServiceProvider
 
     public function __construct()
     {
+        /** @noinspection SpellCheckingInspection */
         $this->key = env('JWT_SECRET', env('APP_KEY', 'U8grDuf4DPnRlWK6xIr7qRi7pzeya0Tj-GFOZft7EBI'));
     }
 
@@ -31,18 +32,22 @@ class AuthServiceProvider
         $this->validateToken(token: $token, data: $decoded);
         return json_decode(json_encode($decoded), true) ?? [];
     }
+
     function validateToken(string|null $token, &$data = null): bool
     {
-        if(empty($token)){
+        if (empty($token)) {
             return false;
         }
+
         try {
             $token = $this->parseTokenBearer($token);
             $data = JWT::decode($token, new Key(
                 keyMaterial: $this->key,
                 algorithm: self::algo,
             ));
-            return ! ($data->ttl < time());
+
+            return !($data->ttl < time());
+
         } catch (\Exception $e) {
             return false;
         }
@@ -66,5 +71,6 @@ class AuthServiceProvider
         }
         return $rawToken;
     }
+
 
 }

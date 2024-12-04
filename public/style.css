@@ -202,31 +202,9 @@ footer {
     justify-content: center;
 }
 
-
 .flex_card {
     display: flex;
     flex: 1 1 17rem;
-}
-
-.top-menu-dropdown {
-    & input#dropdown {
-        display: none;
-
-        &:checked {
-            + label {
-                background-color: #FAF0E6;
-            }
-            ~ div {
-                right: 0;
-                top: 3rem;
-                display: block;
-            }
-        }
-    }
-    > label {
-        font-size: 3rem;
-        line-height: 1.5rem;
-    }
 }
 
 .card-img-top {
@@ -235,4 +213,25 @@ footer {
     object-fit: cover;
 }
 
+.top-menu-dropdown {
+    input#dropdown {
+        display: none;
 
+        &:checked {
+            + label {
+                background-color: var(--bs-primary);
+            }
+
+            ~ div {
+                right: 0;
+                top: 3rem;
+                display: block;
+            }
+        }
+    }
+
+    > label {
+        font-size: 3rem;
+        line-height: 1.5rem;
+    }
+}

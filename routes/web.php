@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\EndpointController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PublicController;
@@ -10,7 +11,9 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/')
     ->group(function () {
         Route::get('/', [PublicController::class, 'index'])->name('home');
-        Route::get('detail/{id}', [PublicController::class, 'detail'])->where('id','[0-9]+')->name('detail');
+        Route::get('detail/{id}', [PublicController::class, 'detail'])
+            ->where('id', '[0-9]+')
+            ->name('detail');
         Route::get('stalice', [PublicController::class, 'bestOff'])->name('best-of');
 
         Route::get('login', [UserAuthController::class, 'login'])->name('login');
@@ -32,17 +35,20 @@ Route::prefix('/')
 Route::prefix('/api/v1')->controller(EndpointController::class)
     ->middleware([ApiMiddleware::class])
     ->group(function () {
+
         Route::post('login', 'login')->withoutMiddleware([ApiMiddleware::class]);
         Route::post('logout', 'logout')->withoutMiddleware([ApiMiddleware::class]);
-        Route::post('register','register')->withoutMiddleware([ApiMiddleware::class]);
+        Route::post('register', 'register')->withoutMiddleware([ApiMiddleware::class]);
         Route::options('passcheck', 'checkPassword')->withoutMiddleware([ApiMiddleware::class]);
-    //create
+
+
+        // create
         Route::post('/', 'create');
-        //read
+        // read
         Route::get('/', 'getAll');
-        Route::get('/{id}','get')->where('id','[0-9]+');
-        //update
-        Route::put('/{id}', 'update')->where('id','[0-9]+');
-        //delete
-        Route::delete('/{id}', 'delete')->where('id', '[0-9]+');
+        Route::get('/{id}', 'get')->where('id', '[0-9]+');
+        // update
+        Route::put('/{id}', 'update')->where('id', '[0-9]+');
+        // delete
+        Route::delete('/{id}', 'delete')->where('id', '[0-9]+');;
     });
