@@ -1,20 +1,18 @@
 <div class="col-md-12">
-    <h4>Registrácia užívateľa</h4>
+    <h4>Informácie o registrovanom užívateľovi</h4>
     <div class="col-md-6">
         <label for="inputEmail4" class="form-label">Email</label>
-        <input type="email" class="form-control" id="inputEmail4" name="email">
-    </div>
-    <div class="col-md-6">
-        <label for="inputName4" class="form-label">Meno</label>
-        <input type="text" class="form-control" id="inputName4" name="name">
+        <input type="email" class="form-control" id="inputEmail4">
     </div>
     <div class="col-md-6">
         <label for="inputPassword4" class="form-label">Heslo</label>
-        <input type="password" class="form-control" id="inputPassword4" name="password">
+        <input type="password" class="form-control" id="inputPassword4">
+    </div>
+    <div class="col-md-6">
+        <label for="inputPassword4a" class="form-label">Zopakuj heslo</label>
+        <input type="password" class="form-control" id="inputPassword4a">
     </div>
 </div>
-
-<div class="form-error-container"></div>
 
 <div class="col-12">
     <div class="form-check">

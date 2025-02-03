@@ -13,8 +13,7 @@
                     @include('partials.forms.add_edit')
 
                 </div>
-                <div class="form-error-container"> </div>
-
+                <div class="form-error-container"></div>
                 <div class="col-12">
                     <button class="btn btn-primary">Aktualizovať položku</button>
                 </div>

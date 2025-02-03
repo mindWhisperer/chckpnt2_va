@@ -12,8 +12,7 @@ class UserAuthController
     {
         $prev = $request->headers->get('referer');
         if ($request->cookies->has(Constants::AUTH_NAME) && $prev && !str_contains($prev, 'login')) {
-            return redirect()->route('login')->with('redirect_to', $request->url());
-
+            return redirect()->to($prev);
         }
 
         return view('layouts.login');
@@ -26,12 +25,7 @@ class UserAuthController
 
     function register(Request $request)
     {
-        $prev = $request->headers->get('referer');
-        if ($request->cookies->has(Constants::AUTH_NAME) && $prev && !str_contains($prev, 'register')) {
-            return redirect()->to($prev);
-        }
-
-        return view('layouts.register');
+        return response()->view('layouts.register')->cookie(Constants::AUTH_NAME, '', -1);
     }
 
     private function apiData(Request $request): array

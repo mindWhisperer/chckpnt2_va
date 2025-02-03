@@ -29,24 +29,19 @@ export class Fetch {
     }
 
     static async #fetch(url, data = null, method = "GET") {
+
         if (url === undefined)
             throw new Error('fetch url must be provided.');
 
         const headers = {
             "Content-Type": "application/json",
-            // Pridáme CSRF token
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
         };
 
-        const options = {
+        return await fetch(this.#apiUrl + url, {
             method,
-            body: JSON.stringify({ data: data || {} }), // Ak je potreba, posielame telo
+            body: JSON.stringify({data: data || {}}),
             headers,
-        };
-
-        return await fetch(this.#apiUrl + url, options)
-            .then(response => response.json())
-            .catch(error => console.error("Error deleting comment:", error));  // Pri chybe
+        }).then(response => response.json());
     }
 }
 

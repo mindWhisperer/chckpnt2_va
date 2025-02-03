@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Providers\BookServiceProvider;
 use App\Providers\GenreServiceProvider;
-use App\Providers\UserServiceProvider;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -14,13 +12,11 @@ readonly class PanelController
 {
     private BookServiceProvider $bookService;
     private GenreServiceProvider $genreService;
-    private UserServiceProvider $userService;
 
     public function __construct()
     {
         $this->bookService = new BookServiceProvider();
         $this->genreService = new GenreServiceProvider();
-        $this->userService = new UserServiceProvider();
     }
 
     public function panel(): View|Factory|Application
@@ -41,11 +37,8 @@ readonly class PanelController
         return view('layouts.panel.edit', ['genreList' => $genreList, 'book' => $book]);
     }
 
-    public function profile()
+    public function profile(): View|Factory|Application
     {
-        $user = Auth::user();
-
-        return view('layouts.panel.profile', compact('user'));
+        return view('layouts.panel.profile');
     }
-
 }

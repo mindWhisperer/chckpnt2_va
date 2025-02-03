@@ -44,16 +44,11 @@ Route::prefix('/api/v1')->controller(EndpointController::class)
 
         // create
         Route::post('/', 'create');
-        Route::post('/comments', 'addComment');
         // read
         Route::get('/', 'getAll');
         Route::get('/{id}', 'get')->where('id', '[0-9]+');
-        Route::get('/comments/{bookId}', 'getComments')->where('bookId', '[0-9]+');
         // update
         Route::put('/{id}', 'update')->where('id', '[0-9]+');
-        Route::put('/comments/{id}', 'updateComment')->where('id', '[0-9]+');
         // delete
-        Route::delete('/{id}', 'delete')->where('id', '[0-9]+');
-        Route::delete('/panel/profil', 'deleteProfile')->where('id', '[0-9]+');
-        Route::delete('/comments/{id}', 'deleteComment');
+        Route::delete('/{id}', 'delete')->where('id', '[0-9]+');;
     });
