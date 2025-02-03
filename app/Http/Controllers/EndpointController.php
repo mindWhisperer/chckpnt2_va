@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Constants;
 use App\Providers\AuthService;
 use App\Providers\BookServiceProvider;
+use App\Providers\CommentServiceProvider;
+use App\Providers\UserServiceProvider;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,11 +14,17 @@ use Symfony\Component\HttpFoundation\Request;
 readonly class EndpointController
 {
     private BookServiceProvider $bookProvider;
+
+    private CommentServiceProvider $commentProvider;
+
+    private UserServiceProvider $userProvider;
     private Builder $table;
 
     public function __construct()
     {
         $this->bookProvider = app(BookServiceProvider::class);
+        $this->commentProvider = app(CommentServiceProvider::class);
+        $this->userProvider = app(UserServiceProvider::class);
         $this->table = DB::table('users');
     }
 
@@ -76,6 +84,7 @@ readonly class EndpointController
      */
     public function delete(string $id): array
     {
+        $this->commentProvider->delete($id);
         $success = $this->bookProvider->delete(id: $id);
         return [
             "code" => 200,
@@ -84,10 +93,100 @@ readonly class EndpointController
         ];
     }
 
-    public function register(string $email, string $password): array
+
+    //create profile
+    public function register(Request $request)
     {
-        return [];
+        $authService = app(AuthService::class);
+
+        $data = $request->get('data');
+        $email = $data["email"];
+        $name = $data["name"];
+        $password = $data["password"];
+
+        // Overenie vstupných dát
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return [
+                "code" => 401,
+                "errors" => [['email', 'Neplatný tvar prihlasovacieho emailu.']],
+                "success" => false,
+            ];
+        }
+        if (empty($password) || strlen($password) < 3) {
+            return [
+                "code" => 401,
+                "errors" => [['password', 'Heslo musí mať aspoň 3 znaky.']],
+                "success" => false,
+            ];
+        }
+
+        // Kontrola, či užívateľ existuje
+        if ($this->userProvider->getByEmail($email)) {
+            return [
+                "code" => 400,
+                "errors" => [['email', 'E-mail je už obsadený.']],
+                "success" => false,
+            ];
+        }
+
+        if($this->userProvider->getByName($name)) {
+            return [
+                "code" => 400,
+                "errors" => [['name', 'Meno je už obsadené.']],
+                "success" => false,
+            ];
+        }
+
+        // Hash hesla a vytvorenie užívateľa
+        $success = $this->userProvider->create($data);
+
+        if (!$success) {
+            return [
+                "code" => 500,
+                "message" => "Chyba pri registrácii",
+                "success" => false,
+            ];
+        }
+
+        // Získanie nového používateľa
+        $user = $this->userProvider->getByEmail($data['email']);
+
+        /** @type AuthService $auth */
+        $auth = app(AuthService::class);
+
+        // Vytvorenie JWT tokenu
+        $token = $auth->createToken([
+            "name" => $user->name,
+            "email" => $user->email,
+            "role" => 9, // Defaultná rola
+        ], Constants::AUTH_TOKEN_TTL);
+
+        return response ([
+            "code" => 200,
+            "message" => "Registration success",
+            "success" => true,
+            Constants::AUTH_NAME => $token,
+        ], 200)
+            ->header('Content-Type', 'application/json')
+            ->cookie(Constants::AUTH_NAME, $token,
+            Constants::AUTH_TOKEN_TTL / 60);
     }
+
+    //delete profile
+    public function deleteProfile(Request $request) {
+        $user = auth()->user();  // Získa prihláseného používateľa
+
+        if ($user) {
+            $user->delete();  // Odstráni profil
+            return response()->json(['message' => 'Profil bol úspešne odstránený.']);
+        }
+
+        return response()->json(['message' => 'Používateľ neexistuje.'], 404);
+    }
+
+
+    //edit profile
+
 
     public function login(Request $request)
     {
@@ -125,6 +224,12 @@ readonly class EndpointController
 
         /** @type AuthService $auth */
         $auth = app(AuthService::class);
+//        \Log::info("Login Debug:", [
+//            "Zadané heslo" => $password,
+//            "Uložené heslo v DB" => $user->password,
+//            "Overenie Hash::check" => Hash::check($password, $user->password)
+//        ]);
+
         if (!$auth->validatePassword($password, $user->password)) {
             return [
                 "code" => 401,
@@ -163,6 +268,67 @@ readonly class EndpointController
     public function checkPassword(string $password): array
     {
         return [$password];
+    }
+
+    /**
+     * Získa všetky komentáre pre danú knihu
+     */
+    public function getComments($bookId)
+    {
+        return $this->commentProvider->getCommentsForBook($bookId) ?? [];
+    }
+
+    /**
+     * Pridanie komentára
+     */
+    public function addComment(Request $request): array
+    {
+        $data = $request->get('data');
+
+        if (empty($data['comment']) || empty($data['book_id']) || empty($data['user_id'])) {
+            return [
+                "code" => 400,
+                "message" => "Chýbajúce údaje pre komentár.",
+                "success" => false,
+            ];
+        }
+
+        $success = $this->commentProvider->create($data);
+
+        return [
+            "code" => 200,
+            "message" => "Komentár bol pridaný",
+            "success" => $success,
+        ];
+    }
+
+    /**
+     * Aktualizácia komentára
+     */
+    public function updateComment(Request $request, string $id): array
+    {
+        $data = $request->get('data');
+        $success = $this->commentProvider->update(id: $id, data: $data);
+
+        return [
+            "code" => 200,
+            "message" => "Komentár bol aktualizovaný",
+            "success" => $success,
+        ];
+    }
+
+    /**
+     * Odstránenie komentára
+     */
+    public function deleteComment(string $id): array
+    {
+        $success = $this->commentProvider->delete(id: $id);
+
+        return [
+            "code" => 200,
+            "message" => "Comment was deleted",
+            "success" => $success,
+        ];
     }
 
 }
