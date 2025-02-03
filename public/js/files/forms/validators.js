@@ -22,6 +22,30 @@ export const loginValidator = (data) => {
 };
 
 /**
+ * @param {{email: string, name: string, password: string}} data
+ * @returns {[string, string][]}
+ */
+export const registerValidator = (data) => {
+    /** @type {[string, string][]} */
+    const errors = [];
+
+    if (!data?.email || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,}$/g.test(data.email)) {
+        errors.push(["email", "Nesprávny tvar prihlasovacieho emailu."]);
+    }
+    if (!data?.name.trim?.()) {
+        errors.push(["name", "Meno nesmie byť prázdne."]);
+    }
+    if (!data?.password?.trim?.()) {
+        errors.push(["password", "Musíš zadať heslo."]);
+    } else if (data.password.trim().length < 3) {
+        errors.push(["password", "Heslo musí mať aspoň 3 znaky."]);
+    }
+
+
+    return errors;
+};
+
+/**
  * @param {{id:string, name:string, description:string, image:string, genre: string|int}} data
  * @returns {[string, string][]}
  */

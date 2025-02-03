@@ -5,6 +5,7 @@ namespace App\Providers;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthService
 {
@@ -70,6 +71,20 @@ class AuthService
             return substr($rawToken, strlen($needle));
         }
         return $rawToken;
+    }
+
+    public function getUserFromToken(?string $token)
+    {
+        if (!$token) {
+            return null;
+        }
+
+        $data = null;
+        if (!$this->validateToken($token, $data) || !isset($data->email)) {
+            return null;
+        }
+
+        return DB::table('users')->where('email', $data->email)->first();
     }
 
 

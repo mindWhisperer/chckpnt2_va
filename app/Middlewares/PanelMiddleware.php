@@ -2,23 +2,29 @@
 
 namespace App\Middlewares;
 
-use App\Helpers\Constants;
+
+
 use App\Providers\AuthService;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Request;
 
 class PanelMiddleware
 {
     public function handle(Request $request, \Closure $next)
     {
-        $token = $request->cookies->get(Constants::AUTH_NAME);
-        /** @type AuthService $service */
+        $token = $request->cookies->get(\App\Helpers\Constants::AUTH_NAME);
+        /** @var AuthService $service */
         $service = app(AuthService::class);
 
-        if (!$service->validateToken($token)) {
-            return redirect()->route('login')->cookie(Constants::AUTH_NAME, '', -1);
+        $user = $service->getUserFromToken($token);
+
+        if (!$user) {
+            return redirect()->route('login')->cookie(\App\Helpers\Constants::AUTH_NAME, '', -1);
         }
 
-        $response = $next($request);
-        return $response;
+        // Nastavíme používateľa ako autentifikovaného
+        Auth::loginUsingId($user->id);
+
+        return $next($request);
     }
 }
