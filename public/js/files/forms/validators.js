@@ -67,8 +67,20 @@ export const editValidator = (data) => {
     if (!data?.genre?.trim?.()) {
         errors.push(['genre', 'Nebol vybraný žáner.']);
     }
-
     return errors;
 };
 
 export const createValidator = editValidator;
+
+/**
+ * @param {{comment: string}} data
+ * @returns {[string, string][]}
+ */
+export const commentValidator = (data) => {
+    /** @type {[string, string][]} */
+    const errors = [];
+
+    if (!data?.comment?.trim?.()) {
+        errors.push(['comment', 'Komentár nesmie byť prázdny.']);
+    }
+}

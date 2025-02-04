@@ -30,13 +30,13 @@ export const formDataCollector = (form, endpoint, validator, callback) => {
         const [_endpoint, _method] = endpoint.split(':');
 
         Fetch[_method?.toLowerCase?.() || "post"](_endpoint, data).then(response => {
-            console.log("Register Response:", response);
+
             if (formErrorsRenderer(form, response))
                 return;
             if (response.success)
                 form.reset();
             callback?.(form, response);
-        });
+        })
     });
 }
 

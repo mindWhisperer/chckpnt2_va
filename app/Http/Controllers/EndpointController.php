@@ -9,6 +9,7 @@ use App\Providers\CommentServiceProvider;
 use App\Providers\UserServiceProvider;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Request;
 
 readonly class EndpointController
@@ -169,7 +170,7 @@ readonly class EndpointController
         ], 200)
             ->header('Content-Type', 'application/json')
             ->cookie(Constants::AUTH_NAME, $token,
-            Constants::AUTH_TOKEN_TTL / 60);
+                Constants::AUTH_TOKEN_TTL / 60);
     }
 
     //delete profile
@@ -278,29 +279,46 @@ readonly class EndpointController
         return $this->commentProvider->getCommentsForBook($bookId) ?? [];
     }
 
+
+    /**
+     * Pridanie komentára
+     */
     /**
      * Pridanie komentára
      */
     public function addComment(Request $request): array
     {
-        $data = $request->get('data');
+        $data = [
+            'comment' => $request->get('comment'),
+            'book_id' => $request->get('book_id'),
+            'user_id' => $request->get('user_id')
+        ];
+        Log::debug('Request data for adding comment: ', $data);
 
+        // Ak sú chýbajúce údaje
         if (empty($data['comment']) || empty($data['book_id']) || empty($data['user_id'])) {
-            return [
+            $response = [
                 "code" => 400,
                 "message" => "Chýbajúce údaje pre komentár.",
                 "success" => false,
             ];
+            Log::debug('Add comment response: ', $response); // Logovanie odpovede
+            return $response;
         }
 
+        // Ak je všetko v poriadku
         $success = $this->commentProvider->create($data);
 
-        return [
+        $response = [
             "code" => 200,
             "message" => "Komentár bol pridaný",
             "success" => $success,
         ];
+        Log::debug('Add comment response about to return: ', $response); // Logovanie odpovede
+        return $response;
     }
+
+
 
     /**
      * Aktualizácia komentára

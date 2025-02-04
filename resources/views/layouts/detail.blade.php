@@ -26,8 +26,15 @@
 
             <div class="row mt-4 riadok">
                 <div class="col-lg-12 comments">
-                    @if($comments->isNotEmpty()) <!-- Ak sú komentáre -->
                     <h3>Komentáre</h3>
+                    <form id="commentForm">
+                        <textarea name="comment" id="comment" required></textarea>
+                        <input type="hidden" name="book_id" value="{{ $book->id }}">
+                        <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                        <button type="submit">Pridať komentár</button>
+                    </form>
+
+                @if($comments->isNotEmpty()) <!-- Ak sú komentáre -->
                     @foreach ($comments as $comment)
                         @if(trim($comment->comment) !== '') <!-- Ak komentár nie je prázdny -->
                         <div class="comment">

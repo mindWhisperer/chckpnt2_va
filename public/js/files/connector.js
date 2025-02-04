@@ -46,7 +46,7 @@ export class Fetch {
 
         return await fetch(this.#apiUrl + url, options)
             .then(response => response.json())
-            .catch(error => console.error("Error deleting comment:", error));  // Pri chybe
+            .catch(error => console.error("Error:", error));  // Pri chybe
     }
 }
 

@@ -38,9 +38,9 @@ class UserServiceProvider
         return $this->table->where('id', $id)->update($data);
     }
 
-    public function delete(int $id): bool
+    public function delete($id): int
     {
-        return $this->table->where('id', $id)->delete();
+        return $this->table->delete(['id' => $id]);
 
     }
 
