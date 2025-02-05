@@ -25,7 +25,8 @@ readonly class PanelController
 
     public function panel(): View|Factory|Application
     {
-        return view('layouts.panel.panel');
+        $books = $this->bookService->getBooksByCreator(Auth::id());
+        return view('layouts.panel.panel', compact('books'));
     }
 
     public function addBook(): View|Factory|Application

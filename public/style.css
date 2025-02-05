@@ -308,3 +308,129 @@ footer {
     width: 70%;
     padding: 1% 1% 0 1%;
 }
+
+/* Tlačidlo na editáciu */
+#editCommentButton {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#editCommentButton:hover {
+    background-color: #45a049;
+}
+
+/* Formulár na editovanie komentára */
+#editCommentForm {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#commentTextarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+#saveButton {
+    padding: 10px 20px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#saveButton:hover {
+    background-color: #007B9E;
+}
+
+/* Všeobecné štýly */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.post-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.post-description {
+    font-size: 1rem;
+    color: #555;
+}
+
+
+/* Deliaca čiara medzi príspevkami */
+.post-item {
+    border-bottom: 1px solid #ddd;  /* Jemná šedá čiara */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    display: flex;
+
+}
+
+.book-image {
+    width: 10rem; /* Veľkosť štvorca, môžeš upraviť */
+    height: 10rem; /* Rovnaká ako šírka = štvorec */
+    object-fit: cover; /* Orezanie tak, aby sa zachoval pomer strán */
+    border-radius: 8px; /* Jemne zaoblené rohy, voliteľné */
+    max-width: 100%; /* Responzívnosť */
+}
+
+/* Responzívne prispôsobenie */
+@media (max-width: 768px) {
+    .post-image {
+        margin-right: 10px;
+    }
+
+    .post-content {
+        margin-left: 10px;
+    }
+
+    .post-actions {
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .post-actions .btn {
+        margin-bottom: 5px;
+    }
+}
+
+/* Prispôsobenie pre malé obrazovky (mobilné zariadenia) */
+@media (max-width: 576px) {
+    .post-image img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .post-title {
+        font-size: 1.1rem;
+    }
+
+    .post-description {
+        font-size: 0.9rem;
+    }
+
+    .post-actions .btn {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+}
