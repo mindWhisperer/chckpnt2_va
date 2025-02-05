@@ -4,7 +4,7 @@ import {
     createValidator,
     editValidator,
     loginValidator,
-    registerValidator
+    registerValidator, updateProfileValidator
 } from "./files/forms/validators.js";
 import {formDataCollector} from "./files/forms/form-data-colletor.js";
 
@@ -29,7 +29,7 @@ formDataCollector(
         });
 
 
-// edit
+// edit book
 const id = document.querySelector('input[name=id]')?.value;
 formDataCollector(
     document.querySelector('form#edit'),
@@ -38,6 +38,22 @@ formDataCollector(
         if (result.success)
             window.location.href = '/detail/' + id;
     });
+
+//edit profile
+const userId = document.querySelector('input[name=id]')?.value;
+
+formDataCollector(
+    document.querySelector('form#editProf'),
+    'profil/'+ userId + ':put', updateProfileValidator,
+    (form, result) => {
+        const previousPage = sessionStorage.getItem('previousPage');
+        if (result.success){
+            window.location.href = '/panel/profil';
+        }
+    });
+
+
+
 
 // create book
 formDataCollector(
@@ -71,7 +87,7 @@ document.querySelector("#commentForm").addEventListener("submit", async function
             user_id: data.user_id
         });  // Odosielame priamo objekt
         if (result && result.success) {
-            alert("Komentár bol pridaný!");
+            //alert("Komentár bol pridaný!");
             window.location.reload();
         } else {
             alert("Chyba: " + (result ? result.message : "Nastala chyba pri odosielaní komentára."));
@@ -81,10 +97,6 @@ document.querySelector("#commentForm").addEventListener("submit", async function
         alert("Došlo k chybe pri odosielaní komentára.");
     }
 });
-
-
-
-
 
 // delete book
 document.querySelector('button#delete')?.addEventListener("click", async (e) => {

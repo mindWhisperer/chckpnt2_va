@@ -46,6 +46,31 @@ export const registerValidator = (data) => {
 };
 
 /**
+ * @param {{email: string, name: string, password: string, profile_pic:string}} data
+ * @returns {[string, string][]}
+ */
+export const updateProfileValidator = (data) => {
+    /** @type {[string, string][]} */
+    const errors = [];
+
+    if (!data?.name.trim?.()) {
+        errors.push(["name", "Meno nesmie byť prázdne."]);
+    }
+    if (!data?.password?.trim?.()) {
+        errors.push(["password", "Musíš zadať heslo."]);
+    } else if (data.password.trim().length < 3) {
+        errors.push(["password", "Heslo musí mať aspoň 3 znaky."]);
+    }
+    if (!data?.profile_pic?.trim?.()) {
+        errors.push(['profile_pic', 'Nebol nastavený obrázok.']);
+    } else if (!isValidImageUrl(data.profile_pic)) {
+        errors.push(['profile_pic', 'Url obrázku nemá správny tvar.']);
+    }
+
+
+    return errors;
+};
+/**
  * @param {{id:string, name:string, description:string, image:string, genre: string|int}} data
  * @returns {[string, string][]}
  */
@@ -83,4 +108,5 @@ export const commentValidator = (data) => {
     if (!data?.comment?.trim?.()) {
         errors.push(['comment', 'Komentár nesmie byť prázdny.']);
     }
+    return errors;
 }

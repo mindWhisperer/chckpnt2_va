@@ -49,4 +49,10 @@ readonly class PanelController
         return view('layouts.panel.profile', compact('user'));
     }
 
+    public function editProfile()
+    {
+        $user = Auth::user();
+        return view('layouts.panel.editProfile', compact('user'));
+    }
+
 }

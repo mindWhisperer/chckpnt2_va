@@ -29,6 +29,9 @@ Route::prefix('/')
                 Route::get('uprava/{id}', 'editBook')
                     ->where('id', '[0-9]+')
                     ->name('edit-book');
+                Route::get('profil/{id}', 'editProfile')
+                    ->where('id', '[0-9]+')
+                    ->name('edit-profile');
             });
     });
 
@@ -51,6 +54,10 @@ Route::prefix('/api/v1')->controller(EndpointController::class)
         Route::get('/comments/{bookId}', 'getComments')->where('bookId', '[0-9]+');
         // update
         Route::put('/{id}', 'update')->where('id', '[0-9]+');
+        Route::put('profil/{id}', 'updateProfile')
+            ->where('id', '[0-9]+')
+            ->name('update-profile');
+
         Route::put('/comments/{id}', 'updateComment')->where('id', '[0-9]+');
         // delete
         Route::delete('/{id}', 'delete')->where('id', '[0-9]+');
