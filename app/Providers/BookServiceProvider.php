@@ -51,4 +51,14 @@ class BookServiceProvider
         return $this->table->orderBy('created_at', 'desc')->first();
     }
 
+    public function getCreator($id)
+    {
+        return DB::table('books')
+            ->join('users', 'books.creator_id', '=', 'users.id')
+            ->where('books.id', $id) // Opravené: použil sa 'books.id'
+            ->select('users.name as creator_name') // Výber mena creator-a
+            ->first();
+    }
+
+
 }

@@ -32,6 +32,8 @@ readonly class PublicController
     public function detail($id): View|Factory|Application
     {
         $book = $this->bookService->read($id);
+        $creator = $this->bookService->getCreator($id);
+        $creatorName = $creator ? $creator->creator_name : 'Neznámy';
         $genreId = $book->genre;
         $genre = $this->genreService->read($genreId);
         $comments = $this->commentService->getCommentsForBook($id);
@@ -39,7 +41,8 @@ readonly class PublicController
         return view('layouts.detail', [
             'book' => $book,
             'genre' => $genre,
-            'comments' => $comments
+            'comments' => $comments,
+            'creatorName' => $creatorName
         ]);
     }
 

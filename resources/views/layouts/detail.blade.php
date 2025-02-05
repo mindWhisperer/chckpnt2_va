@@ -14,6 +14,7 @@
                         <a href="{{route('edit-book', ['id' => $book->id])}}" class="btn btn-outline-secondary">Upraviť</a>
                     @endif
                     <p>Žáner: {{ $genre ? $genre->name : 'N/A' }}</p>
+                    <p><strong>Autor:</strong> {{ $creatorName }}</p>
                     <h2>{{$book->name}}</h2>
                     <p>{{$book->description}}</p>
                 </div>
@@ -28,10 +29,10 @@
                 <div class="col-lg-12 comments">
                     <h3>Komentáre</h3>
                     <form id="commentForm">
-                        <textarea name="comment" id="comment" required></textarea>
+                        <textarea name="comment" id="comment" required rows="4" cols="50"></textarea>
                         <input type="hidden" name="book_id" value="{{ $book->id }}">
                         <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-                        <button type="submit">Pridať komentár</button>
+                        <button type="submit" class="btn btn btn-secondary">Pridať komentár</button>
                     </form>
 
                 @if($comments->isNotEmpty()) <!-- Ak sú komentáre -->
@@ -44,6 +45,18 @@
                             <p>{{ $comment->comment }}</p>
 
                             @if(Auth::id() === $comment->user_id)
+                                <!-- Tlačidlo na spustenie editácie komentára -->
+                                <button id="editCommentButton">Upravit komentár</button>
+
+                                <!-- Formulár na editovanie komentára (skrytý pred zobrazením formuláru) -->
+                                <form id="editCommentForm" style="display: none;" action="#">
+                                    <input type="hidden" name="comment_id" value="{{ $comment->id }}">
+                                    <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                                    <label for="commentTextarea">Komentár:</label>
+                                    <textarea id="commentTextarea" name="comment" rows="4" cols="50"></textarea>
+                                    <button type="submit" id="saveButton">Uložiť</button>
+                                </form>
+
                                 <button type="button" id="deleteComment" class="btn btn-outline-dark" data-id="{{$comment->id}}" >Vymazať</button>
                             @endif
                         </div>
