@@ -13,9 +13,10 @@ class CommentServiceProvider
         $this->table = DB::table('comments');
     }
 
-    public function create(array $data): bool
+    public function createCom(array $data): bool
     {
         return $this->table->insert($data);
+
     }
 
     public function read($id)

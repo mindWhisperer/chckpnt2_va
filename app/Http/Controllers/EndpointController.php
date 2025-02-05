@@ -279,22 +279,33 @@ readonly class EndpointController
         return $this->commentProvider->getCommentsForBook($bookId) ?? [];
     }
 
-
     /**
      * Pridanie komentára
      */
-    /**
-     * Pridanie komentára
-     */
-    public function addComment(Request $request): array
+    public function createComment(Request $request): array
     {
-        $data = [
-            'comment' => $request->get('comment'),
-            'book_id' => $request->get('book_id'),
-            'user_id' => $request->get('user_id')
-        ];
-        Log::debug('Request data for adding comment: ', $data);
+        Log::info('createComment bol zavolaný!');
+        $rawData = $request->getContent();
+        Log::debug('Raw input:', ['data' => $rawData]);
 
+        // Dekóduj JSON zo stringu
+        $decodedData = json_decode($rawData, true);
+        Log::debug('Decoded Data:', ['data' => $decodedData]);
+
+        // Skontroluj, či sú dáta validné
+        if (isset($decodedData['data'])) {
+            $data = [
+                'comment' => $decodedData['data']['comment'],
+                'book_id' => $decodedData['data']['book_id'],
+                'user_id' => $decodedData['data']['user_id']
+            ];
+        } else {
+            // Ak nie sú údaje v správnom formáte
+            $data = [];
+        }
+
+        Log::debug('Request data for adding comment: ', $data);
+        Log::debug('Prijaté dáta:', $request->all());
         // Ak sú chýbajúce údaje
         if (empty($data['comment']) || empty($data['book_id']) || empty($data['user_id'])) {
             $response = [
@@ -307,7 +318,7 @@ readonly class EndpointController
         }
 
         // Ak je všetko v poriadku
-        $success = $this->commentProvider->create($data);
+        $success = $this->commentProvider->createCom($data);
 
         $response = [
             "code" => 200,
@@ -317,7 +328,6 @@ readonly class EndpointController
         Log::debug('Add comment response about to return: ', $response); // Logovanie odpovede
         return $response;
     }
-
 
 
     /**

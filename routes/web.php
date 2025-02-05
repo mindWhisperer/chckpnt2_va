@@ -44,7 +44,7 @@ Route::prefix('/api/v1')->controller(EndpointController::class)
 
         // create
         Route::post('/', 'create');
-        Route::post('/comments', 'addComment');
+        Route::post('/comments', 'createComment');
         // read
         Route::get('/', 'getAll');
         Route::get('/{id}', 'get')->where('id', '[0-9]+');

@@ -34,6 +34,7 @@ export class Fetch {
 
         const headers = {
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token"),  // Pridáme token
             // Pridáme CSRF token
             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
         };
@@ -41,10 +42,14 @@ export class Fetch {
         const options = {
             method,
             body: JSON.stringify({ data: data || {} }), // Ak je potreba, posielame telo
+
+            //body: data ? JSON.stringify(data) : null, // Priamo posielame `data`
+
             headers,
         };
 
-        return await fetch(this.#apiUrl + url, options)
+        //return await fetch(this.#apiUrl + url, options)
+        return await fetch(this.#apiUrl.replace(/\/$/, '') + '/' + url.replace(/^\//, ''), options)
             .then(response => response.json())
             .catch(error => console.error("Error:", error));  // Pri chybe
     }

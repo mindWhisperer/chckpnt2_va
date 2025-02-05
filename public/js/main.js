@@ -49,40 +49,39 @@ formDataCollector(
     });
 
 //create comment
-/*document.querySelector("#commentForm").addEventListener("submit", async function (e) {
+document.querySelector("#commentForm").addEventListener("submit", async function (e) {
     e.preventDefault(); // Zabráni reloadu stránky
 
     let form = new FormData(this); // Načíta dáta z formulára
 
-    let data = {};
-    form.forEach((value, key) => {
-        data[key] = value;
-    });
+    let data = {
+        comment: form.get('comment'),
+        book_id: form.get('book_id'),
+        user_id: form.get('user_id')
+    };
 
-    //let result = await Fetch.post("/add-comment", data); // Použitie Fetch.post()
-    let result = await Fetch.post("/api/v1/add-comment", data);
+    console.log("Sending comment data:", data);  // Tento log ukáže dáta pred odoslaním
 
+    // Tento krok: Získame hodnoty z `data` a pošleme ich priamo (bez zabalenej štruktúry `data`)
 
-    if (result.success) {
-        alert("Komentár bol pridaný!");
-        window.location.reload();
-    } else {
-        alert("Chyba: " + result.message);
-    }
-});*/
-formDataCollector(
-    document.querySelector('form#commentForm'),
-    ':post', commentValidator,
-    (form, result) => {
-        if (result.success) {
-            // Pred odoslaním dát sa môžeš uistiť, že sú správne
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            console.log("Sending comment data:", data);  // Tento log ukáže dáta pred odoslaním
-
+    try {
+        let result = await Fetch.post("/comments", {
+            comment: data.comment,
+            book_id: data.book_id,
+            user_id: data.user_id
+        });  // Odosielame priamo objekt
+        if (result && result.success) {
+            alert("Komentár bol pridaný!");
             window.location.reload();
+        } else {
+            alert("Chyba: " + (result ? result.message : "Nastala chyba pri odosielaní komentára."));
         }
-    });
+    } catch (error) {
+        console.error("Error during comment submission:", error);
+        alert("Došlo k chybe pri odosielaní komentára.");
+    }
+});
+
 
 
 
