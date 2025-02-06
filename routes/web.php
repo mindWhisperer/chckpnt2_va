@@ -38,12 +38,10 @@ Route::prefix('/')
 Route::prefix('/api/v1')->controller(EndpointController::class)
     ->middleware([ApiMiddleware::class])
     ->group(function () {
-
         Route::post('login', 'login')->withoutMiddleware([ApiMiddleware::class]);
         Route::post('logout', 'logout')->withoutMiddleware([ApiMiddleware::class]);
         Route::post('register', 'register')->withoutMiddleware([ApiMiddleware::class]);
         Route::options('passcheck', 'checkPassword')->withoutMiddleware([ApiMiddleware::class]);
-
 
         // create
         Route::post('/', 'create');

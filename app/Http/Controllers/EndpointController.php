@@ -9,7 +9,6 @@ use App\Providers\CommentServiceProvider;
 use App\Providers\UserServiceProvider;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Request;
 
 readonly class EndpointController
@@ -39,14 +38,12 @@ readonly class EndpointController
         return $this->bookProvider->read(id: $id) ?? [];
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
+    //create knihy
     public function create(Request $request): array
     {
         $data = $request->get('data');
+
+        //validacia
         if (empty($data['name'])) {
             return [
                 "code" => 400,
@@ -75,8 +72,12 @@ readonly class EndpointController
                 "success" => false,
             ];
         }
+
+        //vytvorenie knihy
         $success = $this->bookProvider->create(data: $data);
         $newestRecord = $this->bookProvider->getNewest();
+
+        //vratenie odpovede po vytvoreni
         return [
             "code" => 200,
             "message" => "Book was created",
@@ -87,15 +88,11 @@ readonly class EndpointController
         ];
     }
 
-    /**
-     * @param Request $request
-     * @param string $id
-     *
-     * @return array
-     */
+    //update knihy
     public function update(Request $request, string $id): array
     {
         $data = $request->get('data');
+        //validacia
         if (empty($data['name'])) {
             return [
                 "code" => 400,
@@ -126,6 +123,7 @@ readonly class EndpointController
             ];
         }
 
+        //data na aktualizaciu pre knihu
         $updateData = [
             'name' => $data['name'],
             'description' => $data['description'],
@@ -133,7 +131,7 @@ readonly class EndpointController
             'genre' => $data['genre'],
             'updated_at' => now(),
         ];
-
+        //pridanie dat do databazy
         $success = $this->bookProvider->update(id: $id, data: $updateData);
         return [
             "code" => 200,
@@ -142,11 +140,7 @@ readonly class EndpointController
         ];
     }
 
-    /**
-     * @param string $id
-     *
-     * @return array
-     */
+    //delete knihy
     public function delete(string $id): array
     {
         $success = $this->bookProvider->delete(id: $id);
@@ -157,12 +151,9 @@ readonly class EndpointController
         ];
     }
 
-
     //create profile
     public function register(Request $request)
     {
-        $authService = app(AuthService::class);
-
         $data = $request->get('data');
         $email = $data["email"];
         $name = $data["name"];
@@ -189,7 +180,6 @@ readonly class EndpointController
             ];
         }
 
-
         // Kontrola, či užívateľ existuje
         $existingUser = $this->table->where('email', '=', $email)->first();
         if ($existingUser) {
@@ -211,6 +201,7 @@ readonly class EndpointController
             ];
         }
 
+        //pridanie filtru na url
         if (!empty($data['profile_pic']) && !filter_var($data['profile_pic'], FILTER_VALIDATE_URL)) {
             sleep(5);
             return [
@@ -273,8 +264,6 @@ readonly class EndpointController
         ], 500);
     }
 
-
-
     //edit profile
     public function updateProfile(Request $request, string $id): array
     {
@@ -312,9 +301,7 @@ readonly class EndpointController
 
     public function login(Request $request)
     {
-
         $data = $request->get('data');
-
         $email = $data["email"];
         $password = $data["password"];
 
@@ -352,11 +339,6 @@ readonly class EndpointController
 
         /** @type AuthService $auth */
         $auth = app(AuthService::class);
-//        \Log::info("Login Debug:", [
-//            "Zadané heslo" => $password,
-//            "Uložené heslo v DB" => $user->password,
-//            "Overenie Hash::check" => Hash::check($password, $user->password)
-//        ]);
 
         if (!$auth->validatePassword($password, $user->password)) {
             sleep(5);
@@ -404,11 +386,6 @@ readonly class EndpointController
         ], 200)->cookie(Constants::AUTH_NAME, '', -1);
     }
 
-    public function checkPassword(string $password): array
-    {
-        return [$password];
-    }
-
     /**
      * Získa všetky komentáre pre danú knihu
      */
@@ -422,11 +399,8 @@ readonly class EndpointController
      */
     public function createComment(Request $request): array
     {
-        //Log::info('createComment bol zavolaný!');
-
         // Získanie surových dát
         $rawData = $request->getContent();
-        //Log::debug('Raw input:', ['data' => $rawData]);
 
         // Dekóduj JSON zo stringu
         $decodedData = json_decode($rawData, true);
@@ -466,8 +440,6 @@ readonly class EndpointController
             "success" => $success,
         ];
 
-        //Log::debug('Add comment response:', $response);
-
         return $response;
     }
 
@@ -478,19 +450,12 @@ readonly class EndpointController
      */
     public function updateComment(Request $request, string $id): array
     {
-        Log::info($request);
-        Log::info($id);
-
         $data = [
             'comment' => $request['data']['comment'] ?? '',
             'book_id' => $request['data']['book_id'] ?? '',
             'user_id' => $request['data']['user_id'] ?? ''
         ];
 
-
-        // Získanie dát z požiadavky
-        //$data = $request->get('data');
-        Log::info($data);
         $success = $this->commentProvider->update($id, $data);
 
         return [

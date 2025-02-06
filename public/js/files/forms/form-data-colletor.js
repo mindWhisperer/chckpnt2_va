@@ -8,29 +8,33 @@ import {Fetch} from "../connector.js";
  * @returns {void}
  */
 export const formDataCollector = (form, endpoint, validator, callback) => {
-
-
     if (!form)
         return;
 
     form.addEventListener("submit", (e) => {
+        //zabranime odoslaniu formulara hned
         e.preventDefault();
 
+        //zber udajov z formulara
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
+        //spustenie validacie
         const validationResult = validator?.(data);
         if (validationResult?.length) {
+            //ak zlyha tak vratime chyby
             const result = {errors: validationResult, success: false};
+            //zobrazenie chyb
             if (formErrorsRenderer(form, result))
                 return;
+            //ak bez chyb tak volame callback s vysledkom
             return callback?.(form, result);
         }
 
+        //rozdelenie endpointu na url a metodu(ak je zadana inak default je post)
         const [_endpoint, _method] = endpoint.split(':');
 
         Fetch[_method?.toLowerCase?.() || "post"](_endpoint, data).then(response => {
-
             if (formErrorsRenderer(form, response))
                 return;
             if (response.success)
@@ -46,6 +50,7 @@ export const formDataCollector = (form, endpoint, validator, callback) => {
  * @returns {boolean}
  */
 export const formErrorsRenderer = (form, result) => {
+    //hladame kontajner pre chyby
     const errorContainer = form.querySelector('div.form-error-container');
     if (errorContainer) {
         errorContainer.innerHTML = '';
@@ -53,6 +58,7 @@ export const formErrorsRenderer = (form, result) => {
         errorContainer.style.padding = '0'; // Odstránenie paddingu pri skrytí
     }
 
+    //ak je bez chyb tak nezobrazujeme nic
     const errors = result?.errors;
     if (result.success || !errors)
         return false;
@@ -62,18 +68,17 @@ export const formErrorsRenderer = (form, result) => {
         errorContainer.style.paddingTop = '1rem'; // Nastaviť padding hore iba keď je viditeľný
         errorContainer.style.paddingLeft = '1rem'; // Nastaviť padding vľavo iba keď je viditeľný
 
-
         // Pridanie nadpisu pre chyby
         const header = document.createElement('p');
         header.textContent = 'Formulár obsahuje nasledovné chyby:';
-        header.classList.add('fw-bold'); // Bootstrap trieda pre tučné písmo
+        header.classList.add('fw-bold');
         errorContainer.appendChild(header);
 
         // Vytvorenie zoznamu chýb
         const ul = document.createElement('ul');
         errors.forEach(([name, value]) => {
             const li = document.createElement('li');
-            li.textContent = value; // Bezpečne pridanie textu
+            li.textContent = value; //pridame chyby do zoznamu
             ul.appendChild(li);
         });
         errorContainer.appendChild(ul);

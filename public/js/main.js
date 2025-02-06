@@ -10,6 +10,34 @@ import {formDataCollector} from "./files/forms/form-data-colletor.js";
 
 Fetch.setApiUrl("/api/v1/");
 
+// edit(update) book
+const id = document.querySelector('input[name=id]')?.value;
+formDataCollector(
+    document.querySelector('form#edit'),
+    id + ':put', editValidator,
+    (form, result) => {
+        if (result.success)
+            window.location.href = '/detail/' + id;
+    });
+
+// create book
+formDataCollector(
+    document.querySelector('form#create'),
+    ':post', createValidator,
+    (form, result) => {
+        if (result.success)
+            window.location.href = '/detail/' + result.data.id;
+    });
+
+// delete book
+document.querySelector('button#delete')?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (!confirm('Naozaj chceš zmazať túto knihu?'))
+        return;
+    await Fetch.delete(e.currentTarget.dataset.id);
+    window.location.href = '/';
+});
+
 // login
 formDataCollector(
     document.querySelector('form#login'),
@@ -20,40 +48,48 @@ formDataCollector(
             window.location.href = '/panel/profil';
     });
 
-//register
-    formDataCollector(
-        document.querySelector('form#register'),
-        'register:post', registerValidator,
-        (form, result) => {
-            if (result.success)
-                window.location.href = '/';
-        });
-
-
-// edit book
-const id = document.querySelector('input[name=id]')?.value;
+//register (create user)
 formDataCollector(
-    document.querySelector('form#edit'),
-    id + ':put', editValidator,
+    document.querySelector('form#register'),
+    'register:post', registerValidator,
     (form, result) => {
         if (result.success)
-            window.location.href = '/detail/' + id;
+            window.location.href = '/';
     });
 
-//edit profile
+//edit(update) profile
 const userId = document.querySelector('input[name=id]')?.value;
-
 formDataCollector(
     document.querySelector('form#editProf'),
     'profil/'+ userId + ':put', updateProfileValidator,
     (form, result) => {
-        const previousPage = sessionStorage.getItem('previousPage');
         if (result.success){
             window.location.href = '/panel/profil';
         }
     });
 
-//edit comment
+//delete profile
+document.querySelector('button#deleteProfile')?.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    if (!confirm('Naozaj chceš zmazať tento profil?'))
+        return;
+
+    // Získanie ID používateľa
+    const userId = e.currentTarget.dataset.id;
+
+    const response = await Fetch.delete(`/panel/profil/${userId}`);
+
+    // Spracovanie odpovede
+    if (response.success) {
+        window.location.href = '/logout'; // Po úspešnom odstránení, odhlás sa
+    } else {
+        alert('Nastala chyba pri odstraňovaní profilu.');
+    }
+});
+
+
+//edit(update) comment
 document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('.editCommentButton').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -61,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (form) {
                 form.style.display = 'block';
 
-                // Attach form submission logic dynamically
                 if (!form.dataset.listenerAdded) {
                     form.addEventListener('submit', (event) => {
                         event.preventDefault();
@@ -71,10 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             (form, result) => {
                                 if (result.success) {
                                     form.style.display = 'none';
-                                    //alert('Komentár bol úspešne upravený');
                                     location.reload();
-                                    // Update comment text dynamically instead of reloading
-                                    //form.closest('.comment').querySelector('p:nth-child(2)').innerText = form.querySelector('[name="comment"]').value;
                                 } else {
                                     alert('Nastala chyba pri úprave komentára');
                                 }
@@ -87,14 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// create book
-formDataCollector(
-    document.querySelector('form#create'),
-    ':post', createValidator,
-    (form, result) => {
-        if (result.success)
-            window.location.href = '/detail/' + result.data.id;
-    });
+
 
 //create comment
 const commentForm = document.querySelector("#commentForm");
@@ -116,9 +141,7 @@ if (commentForm) {
         user_id: form.get('user_id')
     };
 
-    //console.log("Sending comment data:", data);  // Tento log ukáže dáta pred odoslaním
-
-    // Tento krok: Získame hodnoty z `data` a pošleme ich priamo (bez zabalenej štruktúry `data`)
+    //Získame hodnoty z `data` a pošleme ich priamo (bez zabalenej štruktúry `data`)
 
     try {
         let result = await Fetch.post("/comments", {
@@ -141,15 +164,6 @@ if (commentForm) {
     console.log("Formulár pre komentáre na tejto stránke neexistuje.");
 }
 
-// delete book
-document.querySelector('button#delete')?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (!confirm('Naozaj chceš zmazať túto knihu?'))
-        return;
-    await Fetch.delete(e.currentTarget.dataset.id);
-    window.location.href = '/';
-});
-
 //delete comment
 document.querySelectorAll('button.deleteComment').forEach(button => {
     button.addEventListener("click", async (e) => {
@@ -169,39 +183,3 @@ document.querySelectorAll('button.deleteComment').forEach(button => {
         }
     });
 });
-
-//delete profile
-document.querySelector('button#deleteProfile')?.addEventListener("click", async (e) => {
-    e.preventDefault();
-
-    if (!confirm('Naozaj chceš zmazať tento profil?'))
-        return;
-
-    // Získanie ID používateľa
-    const userId = e.currentTarget.dataset.id;
-
-    console.log(`/panel/profil/${userId}`);
-    // Správna URL pre API
-    const response = await Fetch.delete(`/panel/profil/${userId}`);
-
-    // Spracovanie odpovede
-    if (response.success) {
-        alert('Profil bol úspešne odstránený.');
-        window.location.href = '/logout'; // Po úspešnom odstránení, odhlás sa
-    } else {
-        alert('Nastala chyba pri odstraňovaní profilu.');
-    }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-

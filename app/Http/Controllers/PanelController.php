@@ -14,13 +14,11 @@ readonly class PanelController
 {
     private BookServiceProvider $bookService;
     private GenreServiceProvider $genreService;
-    private UserServiceProvider $userService;
 
     public function __construct()
     {
         $this->bookService = new BookServiceProvider();
         $this->genreService = new GenreServiceProvider();
-        $this->userService = new UserServiceProvider();
     }
 
     public function panel(): View|Factory|Application
@@ -45,7 +43,6 @@ readonly class PanelController
     public function profile()
     {
         $user = Auth::user();
-
         return view('layouts.panel.profile', compact('user'));
     }
 

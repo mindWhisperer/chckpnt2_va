@@ -41,7 +41,6 @@ class UserServiceProvider
         $data['email_verified_at'] = now();
         $data['role'] = 'user';
 
-
         return $this->table->insert($data);
     }
 
@@ -80,7 +79,7 @@ class UserServiceProvider
             // 1. Odstrániť všetky komentáre používateľa
             $this->commentProvider->deleteCommentsByUser($userId);
 
-            // 2. Odstrániť používateľa z tabulky kníh (napríklad nastavením na null alebo vymazaním)
+            // 2. Odstrániť používateľa z tabulky kníh
             $this->bookProvider->removeUserFromBooks($userId);
 
             // 3. Odstrániť samotného používateľa

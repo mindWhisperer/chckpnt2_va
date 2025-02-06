@@ -19,6 +19,7 @@ class AuthService
         $this->key = env('JWT_SECRET', env('APP_KEY', 'U8grDuf4DPnRlWK6xIr7qRi7pzeya0Tj-GFOZft7EBI'));
     }
 
+    //vytvorenie JWT tokenu (udaje ktore chceme pridat do tokenu, time to live = 1 hodina)
     function createToken(array $payload, int $ttl = 3600): string
     {
         return JWT::encode(
@@ -28,12 +29,14 @@ class AuthService
         );
     }
 
+    //dekodovanie JWT tokenu a vratenie dat
     function getTokenData(string $token): array|null
     {
         $this->validateToken(token: $token, data: $decoded);
         return json_decode(json_encode($decoded), true) ?? [];
     }
 
+    //overenie platnosti tokenu
     function validateToken(string|null $token, &$data = null): bool
     {
         if (empty($token)) {
@@ -59,11 +62,13 @@ class AuthService
         return Hash::make(value: $password);
     }
 
+    //overenie ci sa zadane heslo zhoduje s hashovanym
     function validatePassword(string $password, string $hashedPassword): bool
     {
         return Hash::check(value: $password, hashedValue: $hashedPassword);
     }
 
+    //extrahuje token z hlavicky
     private function parseTokenBearer(string $rawToken): string
     {
         $needle = 'Bearer ';
@@ -73,6 +78,7 @@ class AuthService
         return $rawToken;
     }
 
+    //ziskanie udajov z tokenu pomocou emailu
     public function getUserFromToken(?string $token)
     {
         if (!$token) {

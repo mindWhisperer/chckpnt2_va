@@ -34,4 +34,9 @@ class GenreServiceProvider
         }
         return $this;
     }
+
+    public function delete($id): int
+    {
+        return $this->table->where('id', $id)->delete();
+    }
 }

@@ -46,7 +46,6 @@ readonly class PublicController
         ]);
     }
 
-
     public function bestOff(): View|Factory|Application
     {
         $allBooks = $this->bookService->readAll();

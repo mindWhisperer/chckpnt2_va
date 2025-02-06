@@ -41,15 +41,9 @@ class CommentServiceProvider
 
     public function delete($id): bool
     {
-        \Log::info("Trying to delete comment with ID: " . $id);
-
         $deletedRows = $this->table->where('id', $id)->delete();
-
-        \Log::info("Rows deleted: " . $deletedRows);
-
         return $deletedRows > 0;
     }
-
 
     public function getCommentsForBook($bookId)
     {
