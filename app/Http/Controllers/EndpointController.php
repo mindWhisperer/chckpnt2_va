@@ -106,6 +106,7 @@ readonly class EndpointController
 
         // Overenie vstupných dát
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            sleep(5);
             return [
                 "code" => 401,
                 "errors" => [['email', 'Neplatný tvar prihlasovacieho emailu.']],
@@ -116,6 +117,7 @@ readonly class EndpointController
         if (strlen($password) < 5 ||
             !preg_match('/[A-Z]/', $password) ||
             !preg_match('/[0-9]/', $password)) {
+            sleep(5);
             return [
                 "code" => 401,
                 "errors" => [['password', 'Heslo musí mať aspoň 5 znakov, jedno veľké písmeno a jedno číslo.']],
@@ -125,7 +127,8 @@ readonly class EndpointController
 
 
         // Kontrola, či užívateľ existuje
-        if ($this->userProvider->getByEmail($email)) {
+        $existingUser = $this->table->where('email', '=', $email)->first();
+        if ($existingUser) {
             sleep(5);
             return [
                 "code" => 400,
@@ -134,7 +137,8 @@ readonly class EndpointController
             ];
         }
 
-        if($this->userProvider->getByName($name)) {
+        $existingName = $this->table->where('name', '=', $name)->first();
+        if ($existingName) {
             sleep(5);
             return [
                 "code" => 400,
@@ -229,23 +233,29 @@ readonly class EndpointController
         $password = $data["password"];
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            sleep(5);
             return [
                 "code" => 401,
                 "errors" => [['email', 'Nesprávny tvar prihlasovacieho emailu.']],
                 "success" => false,
             ];
         }
-        if (empty($password) || strlen($password) < 3) {
+
+        if (strlen($password) < 5 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            sleep(5);
             return [
                 "code" => 401,
-                "errors" => [['password', 'Heslo musí mať aspoň 3 znaky.']],
+                "errors" => [['password', 'Heslo musí mať aspoň 5 znakov, jedno veľké písmeno a jedno číslo.']],
                 "success" => false,
             ];
         }
 
-        $user = $this->table->where('email', $email)->first();
+        $user = $this->table
+            ->where('email', '=', $email) // Query Builder ochrana proti SQL Injection
+            ->first();
 
         if (!$user) {
+            sleep(5);
             return [
                 "code" => 401,
                 //"message" => "User not exist",
@@ -263,6 +273,7 @@ readonly class EndpointController
 //        ]);
 
         if (!$auth->validatePassword($password, $user->password)) {
+            sleep(5);
             return [
                 "code" => 401,
                 "message" => "Invalid password",

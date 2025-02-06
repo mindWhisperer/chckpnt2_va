@@ -12,8 +12,10 @@ export const loginValidator = (data) => {
     }
     if (!data?.password?.trim?.()) {
         errors.push(["password", "Musíš zadať heslo."]);
-    } else if (data.password.trim().length < 3) {
-        errors.push(["password", "Heslo musí mať aspoň 3 znaky."]);
+    } else if (data.password.length < 5 ||
+        !/[A-Z]/.test(data.password) ||
+        !/[0-9]/.test(data.password)) {
+        errors.push(["password", "Heslo musí mať aspoň 5 znakov, jedno veľké písmeno a jedno číslo."]);
     }
 
     return errors;
