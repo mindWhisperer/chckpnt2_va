@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <h4>Upravuješ profil - {{$user->name ?? ''}}</h4>
 
-                    @include('partials.forms.edit_profile')
+                    @include('partials.forms.register')
 
                 </div>
                 <div class="form-error-container"> </div>

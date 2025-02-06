@@ -37,10 +37,17 @@ class CommentServiceProvider
         return $this->table->where('id', $id)->update($data);
     }
 
-    public function delete($id): int
+    public function delete($id): bool
     {
-        return $this->table->delete(['id' => $id]);
+        \Log::info("Trying to delete comment with ID: " . $id);
+
+        $deletedRows = $this->table->where('id', $id)->delete();
+
+        \Log::info("Rows deleted: " . $deletedRows);
+
+        return $deletedRows > 0;
     }
+
 
     public function getCommentsForBook($bookId)
     {

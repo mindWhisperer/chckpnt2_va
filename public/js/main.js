@@ -163,25 +163,44 @@ document.querySelector('button#delete')?.addEventListener("click", async (e) => 
 //delete comment
 document.querySelector('button#deleteComment')?.addEventListener("click", async (e) => {
     e.preventDefault();
-    // Potvrdenie pred vymazaním
-    if (!confirm('Naozaj chceš zmazať tento komentár?'))
-        return;
-    await Fetch.delete(e.currentTarget.dataset.id);  // Zavoláš API route pre vymazanie komentára
-    window.location.reload();
+    if (!confirm('Naozaj chceš zmazať tento komentár?')) return;
+    const commentId = e.currentTarget.dataset.id;
+    const response = await Fetch.delete(`/comments/${commentId}`);
+    if (response.success) {
+        window.location.reload(); // Dočasne zakomentuj
+    } else {
+        alert("Chyba pri mazaní komentára.");
+    }
 });
 
 
+
 //delete profile
-document.querySelector('button#deleteProfile')?.addEventListener("click",async (e)=> {
+document.querySelector('button#deleteProfile')?.addEventListener("click", async (e) => {
     e.preventDefault();
 
     if (!confirm('Naozaj chceš zmazať tento profil?'))
         return;
 
-    await Fetch.delete(e.currentTarget.dataset.id);
+    // Získanie ID používateľa
+    const userId = e.currentTarget.dataset.id;
 
-    window.location.href = '/logout';
-})
+    // Správna URL pre API
+    const response = await Fetch.delete(`/panel/profil/${userId}`);
+
+    // Spracovanie odpovede
+    if (response.success) {
+        alert('Profil bol úspešne odstránený.');
+        window.location.href = '/logout'; // Po úspešnom odstránení, odhlás sa
+    } else {
+        alert('Nastala chyba pri odstraňovaní profilu.');
+    }
+});
+
+
+
+
+
 
 
 

@@ -493,12 +493,10 @@ readonly class EndpointController
     public function deleteComment(string $id): array
     {
         $success = $this->commentProvider->delete(id: $id);
-
         return [
             "code" => 200,
             "message" => "Comment was deleted",
             "success" => $success,
         ];
     }
-
 }
