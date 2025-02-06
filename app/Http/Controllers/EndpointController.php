@@ -46,9 +46,35 @@ readonly class EndpointController
      */
     public function create(Request $request): array
     {
-        //return $request->get('data');
-
         $data = $request->get('data');
+        if (empty($data['name'])) {
+            return [
+                "code" => 400,
+                "errors" => [['name', 'Názov knihy je povinný.']],
+                "success" => false,
+            ];
+        }
+        if (empty($data['description'])) {
+            return [
+                "code" => 400,
+                "errors" => [['description', 'Popis knihy je povinný.']],
+                "success" => false,
+            ];
+        }
+        if (isset($data['image']) && !filter_var($data['image'], FILTER_VALIDATE_URL)) {
+            return [
+                "code" => 400,
+                "errors" => [['image', 'Nesprávny formát URL obrázku.']],
+                "success" => false,
+            ];
+        }
+        if (empty($data['genre'])) {
+            return [
+                "code" => 400,
+                "errors" => [['genre', 'Žáner je povinný.']],
+                "success" => false,
+            ];
+        }
         $success = $this->bookProvider->create(data: $data);
         $newestRecord = $this->bookProvider->getNewest();
         return [
@@ -70,7 +96,45 @@ readonly class EndpointController
     public function update(Request $request, string $id): array
     {
         $data = $request->get('data');
-        $success = $this->bookProvider->update(id: $id, data: $data);
+        if (empty($data['name'])) {
+            return [
+                "code" => 400,
+                "errors" => [['name', 'Názov knihy je povinný.']],
+                "success" => false,
+            ];
+        }
+        if (empty($data['description'])) {
+            return [
+                "code" => 400,
+                "errors" => [['description', 'Popis knihy je povinný.']],
+                "success" => false,
+            ];
+        }
+        if (isset($data['image']) && !filter_var($data['image'], FILTER_VALIDATE_URL)) {
+            sleep(5);
+            return [
+                "code" => 400,
+                "errors" => [['image', 'Nesprávny formát URL obrázku.']],
+                "success" => false,
+            ];
+        }
+        if (empty($data['genre'])) {
+            return [
+                "code" => 400,
+                "errors" => [['genre', 'Žáner je povinný.']],
+                "success" => false,
+            ];
+        }
+
+        $updateData = [
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'image' => $data['image'] ?? null,
+            'genre' => $data['genre'],
+            'updated_at' => now(),
+        ];
+
+        $success = $this->bookProvider->update(id: $id, data: $updateData);
         return [
             "code" => 200,
             "message" => "Book was updated",
@@ -214,8 +278,30 @@ readonly class EndpointController
     //edit profile
     public function updateProfile(Request $request, string $id): array
     {
-        //\Log::info($request->all());
         $data = $request->get('data');
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return [
+                "code" => 400,
+                "errors" => [['email', 'Nesprávny formát emailu.']],
+                "success" => false,
+            ];
+        }
+        if (empty($data['name'])) {
+            return [
+                "code" => 400,
+                "errors" => [['name', 'Meno je povinné.']],
+                "success" => false,
+            ];
+        }
+
+        if (!empty($data['password']) && (strlen($data['password']) < 5 || !preg_match('/[A-Z]/', $data['password']) || !preg_match('/[0-9]/', $data['password']))) {
+            return [
+                "code" => 400,
+                "errors" => [['password', 'Heslo musí mať aspoň 5 znakov, jedno veľké písmeno a jedno číslo.']],
+                "success" => false,
+            ];
+        }
+
         $success = $this->userProvider->update(id: $id, data: $data);
         return [
             "code" => 200,
@@ -326,50 +412,55 @@ readonly class EndpointController
      */
     public function createComment(Request $request): array
     {
-        Log::info('createComment bol zavolaný!');
+        //Log::info('createComment bol zavolaný!');
+
+        // Získanie surových dát
         $rawData = $request->getContent();
-        Log::debug('Raw input:', ['data' => $rawData]);
+        //Log::debug('Raw input:', ['data' => $rawData]);
 
         // Dekóduj JSON zo stringu
         $decodedData = json_decode($rawData, true);
-        //Log::debug('Decoded Data:', ['data' => $decodedData]);
 
         // Skontroluj, či sú dáta validné
-        if (isset($decodedData['data'])) {
-            $data = [
-                'comment' => $decodedData['data']['comment'],
-                'book_id' => $decodedData['data']['book_id'],
-                'user_id' => $decodedData['data']['user_id']
-            ];
-        } else {
-            // Ak nie sú údaje v správnom formáte
-            $data = [];
-        }
-
-        //Log::debug('Request data for adding comment: ', $data);
-        //Log::debug('Prijaté dáta:', $request->all());
-        // Ak sú chýbajúce údaje
-        if (empty($data['comment']) || empty($data['book_id']) || empty($data['user_id'])) {
-            $response = [
+        if (!isset($decodedData['data'])) {
+            return [
                 "code" => 400,
                 "message" => "Chýbajúce údaje pre komentár.",
                 "success" => false,
             ];
-            //Log::debug('Add comment response: ', $response); // Logovanie odpovede
-            return $response;
         }
 
-        // Ak je všetko v poriadku
+        // Priradenie údajov
+        $data = [
+            'comment' => $decodedData['data']['comment'] ?? '',
+            'book_id' => $decodedData['data']['book_id'] ?? '',
+            'user_id' => $decodedData['data']['user_id'] ?? ''
+        ];
+
+        // Validácia údajov
+        if (empty($data['comment']) || empty($data['book_id']) || empty($data['user_id'])) {
+            return [
+                "code" => 400,
+                "message" => "Chýbajúce údaje pre komentár.",
+                "success" => false,
+            ];
+        }
+
+        // Pridanie komentára do databázy
         $success = $this->commentProvider->createCom($data);
 
+        // Vytvorenie odpovede
         $response = [
-            "code" => 200,
-            "message" => "Komentár bol pridaný",
+            "code" => $success ? 200 : 500,
+            "message" => $success ? "Komentár bol pridaný" : "Došlo k chybe pri pridávaní komentára",
             "success" => $success,
         ];
-        Log::debug('Add comment response about to return: ', $response); // Logovanie odpovede
+
+        //Log::debug('Add comment response:', $response);
+
         return $response;
     }
+
 
 
     /**
@@ -395,10 +486,6 @@ readonly class EndpointController
             "success" => $success,
         ];
     }
-
-
-
-
 
     /**
      * Odstránenie komentára

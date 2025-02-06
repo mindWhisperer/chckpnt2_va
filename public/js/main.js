@@ -1,6 +1,5 @@
 import {Fetch} from "./files/connector.js";
 import {
-    commentValidator,
     createValidator,
     editValidator,
     loginValidator,
@@ -52,7 +51,55 @@ formDataCollector(
         }
     });
 
+//edit comment
+document.querySelector('#editCommentButton')?.addEventListener('click', (e) => {
+    document.querySelector('#editCommentForm').style.display = 'block';
 
+});
+document.querySelector('#editCommentForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    // Získanie údajov z formulára
+    const commentId = formData.get('comment_id');
+    const updatedComment = formData.get('comment');
+
+    // Validácia komentára na klientskej strane
+    if (!updatedComment.trim()) {
+        alert('Komentár nesmie byť prázdny!');
+        return;
+    }
+
+    if (updatedComment.length > 255) {
+        alert('Komentár môže mať maximálne 255 znakov!');
+        return;
+    }
+
+    // Poslanie PUT požiadavky na API s upraveným komentárom
+    const response = await fetch(`/api/v1/comments/${commentId}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            comment: updatedComment,
+            user_id: formData.get('user_id'),
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,  // Ak používate CSRF
+        },
+    });
+
+    const data = await response.json();
+
+    // Po úspešnom uložení komentára, skryjeme formulár a zaktualizujeme zobrazenie komentára
+    if (data.success) {
+        document.querySelector('#editCommentForm').style.display = 'none';
+        alert('Komentár bol úspešne upravený');
+        location.reload(); // Reload stránky, alebo zaktualizuj len komentár na stránke
+    } else {
+        alert('Nastala chyba pri úprave komentára');
+    }
+});
 
 
 // create book
@@ -70,13 +117,19 @@ document.querySelector("#commentForm").addEventListener("submit", async function
 
     let form = new FormData(this); // Načíta dáta z formulára
 
+    let comment = form.get('comment').trim();
+    if (!comment) {
+        alert("Komentár nemôže byť prázdny.");
+        return;
+    }
+
     let data = {
         comment: form.get('comment'),
         book_id: form.get('book_id'),
         user_id: form.get('user_id')
     };
 
-    console.log("Sending comment data:", data);  // Tento log ukáže dáta pred odoslaním
+    //console.log("Sending comment data:", data);  // Tento log ukáže dáta pred odoslaním
 
     // Tento krok: Získame hodnoty z `data` a pošleme ich priamo (bez zabalenej štruktúry `data`)
 
