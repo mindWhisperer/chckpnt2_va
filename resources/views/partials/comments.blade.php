@@ -22,7 +22,7 @@
                 </p>
                 <p>{{ $comment->comment }}</p>
 
-                @if(Auth::id() === $comment->user_id)
+                @if(Auth::id() === $comment->user_id || Auth::user()->role ==='admin')
                     <!-- Tlačidlo na spustenie editácie komentára -->
                     <button class="editCommentButton">Upravit komentár</button>
 
