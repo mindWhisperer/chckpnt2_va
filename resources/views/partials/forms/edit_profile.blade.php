@@ -1,5 +1,9 @@
 <div class="col-md-12">
     <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Email </label>
+        <input type="email" class="form-control" id="inputEmail4" name="email" value="{{$user->email}}">
+    </div>
+    <div class="col-md-6">
         <label for="inputName4" class="form-label">Meno</label>
         <input type="text" class="form-control" id="inputName4" name="name" value="{{$user->name}}">
     </div>

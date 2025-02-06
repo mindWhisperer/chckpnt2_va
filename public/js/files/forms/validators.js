@@ -22,7 +22,7 @@ export const loginValidator = (data) => {
 };
 
 /**
- * @param {{email: string, name: string, password: string}} data
+ * @param {{email: string, name: string, password: string, profile_pic:string}} data
  * @returns {[string, string][]}
  */
 export const registerValidator = (data) => {
@@ -40,36 +40,15 @@ export const registerValidator = (data) => {
     } else if (data.password.trim().length < 3) {
         errors.push(["password", "Heslo musí mať aspoň 3 znaky."]);
     }
-
-
-    return errors;
-};
-
-/**
- * @param {{email: string, name: string, password: string, profile_pic:string}} data
- * @returns {[string, string][]}
- */
-export const updateProfileValidator = (data) => {
-    /** @type {[string, string][]} */
-    const errors = [];
-
-    if (!data?.name.trim?.()) {
-        errors.push(["name", "Meno nesmie byť prázdne."]);
-    }
-    if (!data?.password?.trim?.()) {
-        errors.push(["password", "Musíš zadať heslo."]);
-    } else if (data.password.trim().length < 3) {
-        errors.push(["password", "Heslo musí mať aspoň 3 znaky."]);
-    }
-    if (!data?.profile_pic?.trim?.()) {
-        errors.push(['profile_pic', 'Nebol nastavený obrázok.']);
-    } else if (!isValidImageUrl(data.profile_pic)) {
+    if (data?.profile_pic?.trim?.() && !isValidImageUrl(data.profile_pic)) {
         errors.push(['profile_pic', 'Url obrázku nemá správny tvar.']);
     }
 
-
     return errors;
 };
+
+export const updateProfileValidator = registerValidator;
+
 /**
  * @param {{id:string, name:string, description:string, image:string, genre: string|int}} data
  * @returns {[string, string][]}
@@ -84,9 +63,7 @@ export const editValidator = (data) => {
     if (!data?.description?.trim?.()) {
         errors.push(['description', 'Chýba popis knihy.']);
     }
-    if (!data?.image?.trim?.()) {
-        errors.push(['image', 'Nebol nastavený obrázok.']);
-    } else if (!isValidImageUrl(data.image)) {
+    if (data?.image?.trim?.() && !isValidImageUrl(data.image)) {
         errors.push(['image', 'Url obrázku nemá správny tvar.']);
     }
     if (!data?.genre?.trim?.()) {
@@ -96,17 +73,3 @@ export const editValidator = (data) => {
 };
 
 export const createValidator = editValidator;
-
-/**
- * @param {{comment: string}} data
- * @returns {[string, string][]}
- */
-export const commentValidator = (data) => {
-    /** @type {[string, string][]} */
-    const errors = [];
-
-    if (!data?.comment?.trim?.()) {
-        errors.push(['comment', 'Komentár nesmie byť prázdny.']);
-    }
-    return errors;
-}

@@ -51,4 +51,9 @@ class CommentServiceProvider
             ->get();
     }
 
+    public function deleteCommentsByUser(int $userId)
+    {
+        return $this->table->where('user_id', $userId)->delete();
+    }
+
 }

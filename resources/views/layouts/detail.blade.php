@@ -29,7 +29,7 @@
                 <div class="col-lg-12 comments">
                     <h3>Komentáre</h3>
                     <form id="commentForm">
-                        <textarea name="comment" id="comment" required rows="4" cols="50"></textarea>
+                        <textarea name="comment" id="comment" required></textarea>
                         <input type="hidden" name="book_id" value="{{ $book->id }}">
                         <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                         <button type="submit" class="btn btn btn-secondary">Pridať komentár</button>
