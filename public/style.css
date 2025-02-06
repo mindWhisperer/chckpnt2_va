@@ -67,10 +67,10 @@ body {
 }
 
 .nav-link {
-    padding: 10px;
+    padding: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     text-align: center;
-    margin-left: 10px;
+    margin-left: 1rem;
 }
 
 .nav-link:hover {
@@ -83,6 +83,29 @@ body {
 
 .nav-link:hover {
     color: rgb(128, 128, 128);
+}
+
+.top-menu-dropdown {
+    & input#dropdown {
+        display: none;
+
+        &:checked {
+            + label {
+                background-color: #352F44;
+            }
+
+            ~ div {
+                right: 0;
+                top: 3rem;
+                display: block;
+            }
+        }
+    }
+
+    > label {
+        font-size: 3rem;
+        line-height: 1.5rem;
+    }
 }
 
 .btn {
@@ -107,6 +130,9 @@ footer {
 }
 
 /*pravidla pre index*/
+.btn.novinka {
+    background-color:#FFD95F;
+}
 .riadok {
     margin: 3rem;
     padding: 2rem;
@@ -144,11 +170,6 @@ footer {
 }
 
 /*stranka 2*/
-.rad {
-    margin: 3rem 0 3rem 3rem;
-    align-content: center;
-}
-
 .card {
     width: 17rem;
     padding: 1rem;
@@ -169,6 +190,10 @@ footer {
 
 /*breakpoint pri maximalnej velkosti displeju 992px*/
 @media (max-width: 992px) {
+    .navbar>.container-fluid {
+        justify-content: center !important;
+    }
+
     .riadok {
         flex-direction: column;
     }
@@ -180,11 +205,6 @@ footer {
     .btn {
         margin-bottom: 3rem;
         width: 100%;
-    }
-
-    .rad {
-        margin: 2rem;
-        align-content: center;
     }
 
 }
@@ -203,6 +223,7 @@ footer {
     .profile-tab h5{
         text-align: center;
     }
+
     .profile-tab p{
         text-align: center;
     }
@@ -241,29 +262,6 @@ footer {
     object-fit: cover;
 }
 
-.top-menu-dropdown {
-    input#dropdown {
-        display: none;
-
-        &:checked {
-            + label {
-                background-color: var(--bs-primary);
-            }
-
-            ~ div {
-                right: 0;
-                top: 3rem;
-                display: block;
-            }
-        }
-    }
-
-    > label {
-        font-size: 3rem;
-        line-height: 1.5rem;
-    }
-}
-
 .emp-profile{
     padding: 3%;
     margin-top: 3%;
@@ -274,7 +272,6 @@ footer {
 
 .profile-img{
     text-align: center;
-
 }
 
 .profile-img img{
@@ -314,7 +311,7 @@ footer {
 }
 
 /* Tlačidlo na editáciu */
-#editCommentButton {
+.editCommentButton {
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
@@ -324,23 +321,23 @@ footer {
     font-size: 16px;
 }
 
-#editCommentButton:hover {
+.editCommentButton:hover {
     background-color: #45a049;
 }
 
 /* Formulár na editovanie komentára */
-#editCommentForm {
+.editCommentForm {
     margin-top: 20px;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #EFF3EA;
     border-radius: 5px;
     border: 1px solid #ddd;
 }
 
 #commentTextarea {
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    padding: 1rem;
+    font-size: medium;
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-top: 10px;
@@ -348,17 +345,30 @@ footer {
 
 #saveButton {
     padding: 10px 20px;
-    background-color: #008CBA;
+    background-color: #27667B;
     color: white;
     border: none;
-    cursor: pointer;
     border-radius: 5px;
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: medium;
+    margin-bottom: 1rem;
 }
 
 #saveButton:hover {
     background-color: #007B9E;
+}
+
+.deleteButton {
+    padding: 10px 20px;
+    background-color: #AF1740;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: medium;
+    margin-bottom: 1rem;
+}
+
+.deleteButton:hover {
+    background-color: #740938;
 }
 
 .post-title {

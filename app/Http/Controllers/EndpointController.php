@@ -371,8 +371,8 @@ readonly class EndpointController
         $token = $auth->createToken([
             "name" => $user->name,
             "email" => $user->email,
-            //"role" => $user->role,
-            "role" => 9,
+            "role" => $user->role,
+            //"role" => 9,
         ], Constants::AUTH_TOKEN_TTL);
 
         return response([
@@ -382,7 +382,17 @@ readonly class EndpointController
             Constants::AUTH_NAME => $token,
         ], 200)
             ->header('Content-Type', 'application/json')
-            ->cookie(Constants::AUTH_NAME, $token, Constants::AUTH_TOKEN_TTL / 60);
+            ->cookie(
+                Constants::AUTH_NAME,
+                $token,
+                Constants::AUTH_TOKEN_TTL / 60,
+                '/', // Path
+                null, // Domain (optional)
+                true, // Secure
+                true, // HttpOnly
+                false, // Raw
+                'None' // SameSite Policy (None, Lax, Strict)
+            );
     }
 
     public function logout()
@@ -468,16 +478,19 @@ readonly class EndpointController
      */
     public function updateComment(Request $request, string $id): array
     {
-        // Validácia dát pre komentár
-        $request->validate([
-            'comment' => 'required|string|max:255', // Príklad validácie na minimálnu dĺžku a formát
-        ]);
+        Log::info($request);
+        Log::info($id);
 
-        // Získanie dát z požiadavky
         $data = [
-            'comment' => $request->input('comment'),
+            'comment' => $request['data']['comment'] ?? '',
+            'book_id' => $request['data']['book_id'] ?? '',
+            'user_id' => $request['data']['user_id'] ?? ''
         ];
 
+
+        // Získanie dát z požiadavky
+        //$data = $request->get('data');
+        Log::info($data);
         $success = $this->commentProvider->update($id, $data);
 
         return [

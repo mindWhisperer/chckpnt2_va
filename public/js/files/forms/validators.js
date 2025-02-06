@@ -75,3 +75,21 @@ export const editValidator = (data) => {
 };
 
 export const createValidator = editValidator;
+
+/**
+ * @param {{comment:string}} data
+ * @returns {[string, string][]}
+ */
+export const commentValidator = (data) => {
+    const errors = [];
+
+    if (!data.comment.trim()) {
+        errors.push('Komentár nesmie byť prázdny!');
+    }
+
+    if (data.comment.length > 255) {
+        errors.push('Komentár môže mať maximálne 255 znakov!');
+    }
+
+    return errors;
+};

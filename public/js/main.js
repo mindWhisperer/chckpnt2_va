@@ -1,5 +1,6 @@
 import {Fetch} from "./files/connector.js";
 import {
+    commentValidator,
     createValidator,
     editValidator,
     loginValidator,
@@ -15,7 +16,7 @@ formDataCollector(
     'login:post', loginValidator,
     (form, result) => {
         if (result.success)
-            window.location.href = '/';
+            window.location.href = '/panel/profil';
     });
 
 //register
@@ -52,55 +53,38 @@ formDataCollector(
     });
 
 //edit comment
-document.querySelector('#editCommentButton')?.addEventListener('click', (e) => {
-    document.querySelector('#editCommentForm').style.display = 'block';
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.editCommentButton').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const form = e.target.closest('div').querySelector('.editCommentForm');
+            if (form) {
+                form.style.display = 'block';
 
-});
-document.querySelector('#editCommentForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
+                // Attach form submission logic dynamically
+                if (!form.dataset.listenerAdded) {
+                    form.addEventListener('submit', (event) => {
+                        event.preventDefault();
 
-    const formData = new FormData(e.target);
-
-    // Získanie údajov z formulára
-    const commentId = formData.get('comment_id');
-    const updatedComment = formData.get('comment');
-
-    // Validácia komentára na klientskej strane
-    if (!updatedComment.trim()) {
-        alert('Komentár nesmie byť prázdny!');
-        return;
-    }
-
-    if (updatedComment.length > 255) {
-        alert('Komentár môže mať maximálne 255 znakov!');
-        return;
-    }
-
-    // Poslanie PUT požiadavky na API s upraveným komentárom
-    const response = await fetch(`/api/v1/comments/${commentId}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-            comment: updatedComment,
-            user_id: formData.get('user_id'),
-        }),
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,  // Ak používate CSRF
-        },
+                        const commentId = form.querySelector('[name="comment_id"]').value;
+                        formDataCollector(form, `/comments/${commentId}:post`, commentValidator,
+                            (form, result) => {
+                                if (result.success) {
+                                    form.style.display = 'none';
+                                    //alert('Komentár bol úspešne upravený');
+                                    location.reload();
+                                    // Update comment text dynamically instead of reloading
+                                    //form.closest('.comment').querySelector('p:nth-child(2)').innerText = form.querySelector('[name="comment"]').value;
+                                } else {
+                                    alert('Nastala chyba pri úprave komentára');
+                                }
+                            });
+                    });
+                    form.dataset.listenerAdded = "true"; // Prevent duplicate event listeners
+                }
+            }
+        });
     });
-
-    const data = await response.json();
-
-    // Po úspešnom uložení komentára, skryjeme formulár a zaktualizujeme zobrazenie komentára
-    if (data.success) {
-        document.querySelector('#editCommentForm').style.display = 'none';
-        alert('Komentár bol úspešne upravený');
-        location.reload(); // Reload stránky, alebo zaktualizuj len komentár na stránke
-    } else {
-        alert('Nastala chyba pri úprave komentára');
-    }
 });
-
 
 // create book
 formDataCollector(
