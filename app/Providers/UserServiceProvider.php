@@ -37,6 +37,10 @@ class UserServiceProvider
         if (!isset($data['profile_pic'])) {
             $data['profile_pic'] = 'https://ih1.redbubble.net/image.4623684504.3323/st,small,507x507-pad,600x600,f8f8f8.u7.jpg';
         }
+        $data['created_at'] = now();
+        $data['email_verified_at'] = now();
+        $data['role'] = 'user';
+
 
         return $this->table->insert($data);
     }
@@ -49,6 +53,7 @@ class UserServiceProvider
         if (!isset($data['profile_pic'])) {
             $data['profile_pic'] = 'https://ih1.redbubble.net/image.4623684504.3323/st,small,507x507-pad,600x600,f8f8f8.u7.jpg';
         }
+        $data['updated_at'] = now();
         return $this->table->where('id', $id)->update($data);
     }
 

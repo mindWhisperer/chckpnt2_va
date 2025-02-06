@@ -15,6 +15,7 @@ class CommentServiceProvider
 
     public function createCom(array $data): bool
     {
+        $data['created_at'] = now();
         return $this->table->insert($data);
 
     }
@@ -34,6 +35,7 @@ class CommentServiceProvider
         if (empty($data)) {
             return 0;
         }
+        $data['updated_at'] = now();
         return $this->table->where('id', $id)->update($data);
     }
 

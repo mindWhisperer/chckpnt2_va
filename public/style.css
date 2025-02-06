@@ -281,17 +281,25 @@ footer {
 
 .profile-head h3{
     color: #333;
+    font-size: xx-large;
+    font-weight: bold;
     margin-bottom: 4rem;
 }
 
-.profile-btn{
+.profile-btn {
     border: none;
     border-radius: 1.5rem;
     width: 70%;
     padding: 2%;
-    font-weight: 600;
+    font-size: medium;
     color: #6c757d;
     cursor: pointer;
+}
+
+.profile-btn a{
+    font-size: medium;
+    color: #6c757d;
+    text-decoration: none;
 }
 
 .profile-tab h5{
@@ -326,37 +334,6 @@ footer {
 }
 
 /* Formulár na editovanie komentára */
-.editCommentForm {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #EFF3EA;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-#commentTextarea {
-    width: 100%;
-    padding: 1rem;
-    font-size: medium;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-top: 10px;
-}
-
-#saveButton {
-    padding: 10px 20px;
-    background-color: #27667B;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: medium;
-    margin-bottom: 1rem;
-}
-
-#saveButton:hover {
-    background-color: #007B9E;
-}
-
 .deleteButton {
     padding: 10px 20px;
     background-color: #AF1740;
@@ -365,6 +342,7 @@ footer {
     border-radius: 5px;
     font-size: medium;
     margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 .deleteButton:hover {
@@ -400,6 +378,61 @@ footer {
     border-radius: 8px; /* Jemne zaoblené rohy, voliteľné */
     max-width: 100%; /* Responzívnosť */
 }
+
+/* Štýl pre oba formuláre */
+#commentForm,
+.editCommentForm {
+    max-width: 30rem;
+    width: 90%;
+    margin: 1.25rem 0; /* Zarovná na ľavú stranu */
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Štýl pre všetky textové polia */
+#commentForm textarea,
+.editCommentForm textarea {
+    width: 100%;
+    height: 7.5rem;
+    padding: 0.625rem;
+    border: 0.063rem solid #ced4da;
+    border-radius: 0.313rem;
+    resize: none;
+    font-size: medium;
+    background: #fff;
+    transition: border 0.3s ease-in-out;
+}
+
+#commentForm textarea:focus,
+.editCommentForm textarea:focus {
+    border-color: #6c757d;
+    outline: none;
+    box-shadow: 0 0 0.313rem rgba(108, 117, 125, 0.5);
+}
+
+/* Štýl pre všetky tlačidlá */
+#commentForm button,
+.editCommentForm button {
+    width: 100%;
+    padding: 0.625rem;
+    margin-top: 0.625rem;
+    font-size: medium;
+    font-weight: bold;
+    color: #fff;
+    background: #6c757d;
+    border: none;
+    border-radius: 0.313rem;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+#commentForm button:hover,
+.editCommentForm button:hover {
+    background: #5a6268;
+}
+
 
 
 

@@ -3,6 +3,7 @@
         <h3>Komentáre</h3>
         @if(\App\Helpers\Roles::isLogged())
         <form id="commentForm">
+            <label for="comment">Pridaj komentár:</label>
             <textarea name="comment" id="comment" required></textarea>
             <input type="hidden" name="book_id" value="{{ $book->id }}">
             <input type="hidden" name="user_id" value="{{ auth()->id() }}">

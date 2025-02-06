@@ -15,6 +15,7 @@ formDataCollector(
     document.querySelector('form#login'),
     'login:post', loginValidator,
     (form, result) => {
+        console.log(document.cookie);
         if (result.success)
             window.location.href = '/panel/profil';
     });

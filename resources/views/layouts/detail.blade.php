@@ -13,9 +13,10 @@
                         <button type="button" id="delete" data-id="{{$book->id}}" class="btn btn-outline-dark">Vymazať</button>
                         <a href="{{route('edit-book', ['id' => $book->id])}}" class="btn btn-outline-secondary">Upraviť</a>
                     @endif
-                    <p>Žáner: {{ $genre ? $genre->name : 'N/A' }}</p>
-                    <p><strong>Autor:</strong> {{ $creatorName }}</p>
                     <h2>{{$book->name}}</h2>
+                        <br>
+                    <p><strong>Žáner:</strong> {{ $genre ? $genre->name : 'N/A' }}</p>
+                    <p><strong>Autor:</strong> {{ $creatorName }}</p>
                     <p>{{$book->description}}</p>
                 </div>
 
