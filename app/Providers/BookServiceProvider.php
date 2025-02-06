@@ -53,7 +53,7 @@ class BookServiceProvider
 
     public function removeUserFromBooks(int $userId)
     {
-        return $this->table->where('user_id', $userId)->update(['user_id' => null]);
+        return $this->table->where('creator_id', $userId)->update(['creator_id' => null]);
     }
 
 

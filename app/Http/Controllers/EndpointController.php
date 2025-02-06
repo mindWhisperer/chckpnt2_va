@@ -261,18 +261,18 @@ readonly class EndpointController
         $success = $this->userProvider->deleteUserAndRelatedData($userId);
 
         if ($success) {
-            return [
-                "code" => 200,
-                "message" => "User was deleted",
-                "success" => $success,
-            ];
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil bol úspešne odstránený.'
+            ], 200);
         }
-        return [
-            "code" => 500,
-            "message" => "Nastala chyba pri odstraňovaní používateľa.",
-            "success" => $success,
-        ];
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Nastala chyba pri odstraňovaní profilu.'
+        ], 500);
     }
+
 
 
     //edit profile

@@ -61,6 +61,6 @@ Route::prefix('/api/v1')->controller(EndpointController::class)
         Route::put('/comments/{id}', 'updateComment')->where('id', '[0-9]+');
         // delete
         Route::delete('/{id}', 'delete')->where('id', '[0-9]+');
-        Route::delete('/panel/profil', 'deleteProfile')->where('id', '[0-9]+');
+        Route::delete('/panel/profil/{id}', 'deleteProfile');
         Route::delete('/comments/{id}', 'deleteComment');
     });

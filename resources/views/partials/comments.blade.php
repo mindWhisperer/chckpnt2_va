@@ -30,7 +30,7 @@
                         <button type="submit" id="saveButton">Uložiť</button>
                     </form>
 
-                    <button type="button" id="deleteComment" class="btn btn-outline-dark" data-id="{{$comment->id}}" >Vymazať</button>
+                    <button type="button" class="btn btn-outline-dark deleteComment" data-id="{{$comment->id}}" >Vymazať</button>
                 @endif
             </div>
             @endif

@@ -112,7 +112,9 @@ formDataCollector(
     });
 
 //create comment
-document.querySelector("#commentForm").addEventListener("submit", async function (e) {
+const commentForm = document.querySelector("#commentForm");
+if (commentForm) {
+    commentForm.addEventListener("submit", async function (e) {
     e.preventDefault(); // Zabráni reloadu stránky
 
     let form = new FormData(this); // Načíta dáta z formulára
@@ -150,6 +152,9 @@ document.querySelector("#commentForm").addEventListener("submit", async function
         alert("Došlo k chybe pri odosielaní komentára.");
     }
 });
+} else {
+    console.log("Formulár pre komentáre na tejto stránke neexistuje.");
+}
 
 // delete book
 document.querySelector('button#delete')?.addEventListener("click", async (e) => {
@@ -161,19 +166,24 @@ document.querySelector('button#delete')?.addEventListener("click", async (e) => 
 });
 
 //delete comment
-document.querySelector('button#deleteComment')?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (!confirm('Naozaj chceš zmazať tento komentár?')) return;
-    const commentId = e.currentTarget.dataset.id;
-    const response = await Fetch.delete(`/comments/${commentId}`);
-    if (response.success) {
-        window.location.reload(); // Dočasne zakomentuj
-    } else {
-        alert("Chyba pri mazaní komentára.");
-    }
+document.querySelectorAll('button.deleteComment').forEach(button => {
+    button.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const commentId = e.currentTarget.dataset.id;
+
+        if (!confirm('Naozaj chceš zmazať tento komentár?')) return;
+
+        const response = await Fetch.delete(`/comments/${commentId}`);
+        console.log("Response:", response); // Debugging
+
+        if (response.success) {
+            window.location.reload();
+        } else {
+            alert("Chyba pri mazaní komentára.");
+        }
+    });
 });
-
-
 
 //delete profile
 document.querySelector('button#deleteProfile')?.addEventListener("click", async (e) => {
@@ -185,6 +195,7 @@ document.querySelector('button#deleteProfile')?.addEventListener("click", async 
     // Získanie ID používateľa
     const userId = e.currentTarget.dataset.id;
 
+    console.log(`/panel/profil/${userId}`);
     // Správna URL pre API
     const response = await Fetch.delete(`/panel/profil/${userId}`);
 
