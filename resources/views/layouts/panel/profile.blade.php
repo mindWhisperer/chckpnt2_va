@@ -15,10 +15,11 @@
                     </h3>
                 </div>
                 <div class="col-md-2">
-                   <button type="button" class="profile-edit-btn"><a href="{{route('edit-profile', ['id' => $user->id])}}" class="profile-edit-btn">Upraviť profil</a></button>
+                    <button type="button" class="profile-btn"><a href="{{route('edit-profile', ['id' => $user->id])}}" class="profile-edit-btn">Upraviť profil</a></button>
                 </div>
                 <div class="col-md-2">
-                    <button type="button" data-id="{{$user->id}}" id="deleteProfile" class="profile-edit-btn"> Odstrániť profil
+                    <button type="button" class="profile-btn" data-id="{{$user->id}}" id="deleteProfile">
+                        Odstrániť profil
                     </button>
                 </div>
             </div>

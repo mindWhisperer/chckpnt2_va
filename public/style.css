@@ -207,10 +207,14 @@ footer {
         text-align: center;
     }
 
-    .profile-edit-btn {
+    .profile-btn {
         display: flex;
         justify-self: center;
         justify-content: center;
+    }
+
+    .post-actions .btn {
+        margin-bottom: 1rem;
     }
 }
 
@@ -283,7 +287,7 @@ footer {
     margin-bottom: 4rem;
 }
 
-.profile-edit-btn{
+.profile-btn{
     border: none;
     border-radius: 1.5rem;
     width: 70%;
@@ -357,20 +361,14 @@ footer {
     background-color: #007B9E;
 }
 
-/* Všeobecné štýly */
-body {
-    font-family: Arial, sans-serif;
-}
-
-.card {
-    border-radius: 8px;
-}
-
 .post-title {
     font-size: 1.25rem;
     font-weight: bold;
 }
 
+.post-image {
+    text-align: center;
+}
 .post-description {
     font-size: 1rem;
     color: #555;
@@ -387,50 +385,12 @@ body {
 }
 
 .book-image {
-    width: 10rem; /* Veľkosť štvorca, môžeš upraviť */
     height: 10rem; /* Rovnaká ako šírka = štvorec */
     object-fit: cover; /* Orezanie tak, aby sa zachoval pomer strán */
     border-radius: 8px; /* Jemne zaoblené rohy, voliteľné */
     max-width: 100%; /* Responzívnosť */
 }
 
-/* Responzívne prispôsobenie */
-@media (max-width: 768px) {
-    .post-image {
-        margin-right: 10px;
-    }
 
-    .post-content {
-        margin-left: 10px;
-    }
 
-    .post-actions {
-        margin-top: 10px;
-        flex-wrap: wrap;
-    }
 
-    .post-actions .btn {
-        margin-bottom: 5px;
-    }
-}
-
-/* Prispôsobenie pre malé obrazovky (mobilné zariadenia) */
-@media (max-width: 576px) {
-    .post-image img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .post-title {
-        font-size: 1.1rem;
-    }
-
-    .post-description {
-        font-size: 0.9rem;
-    }
-
-    .post-actions .btn {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-    }
-}
