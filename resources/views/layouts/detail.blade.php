@@ -9,12 +9,10 @@
             <div class="riadok row">
                 <!-- Textová časť -->
                 <div class="col-lg-6 textos">
-                    @if(\App\Helpers\Roles::isLogged())
-                        @if(Auth::id() === $book->creator_id)
+                    @if(\App\Helpers\Roles::isLogged() && (Auth::id() === $book->creator_id || Auth::user()->role ==='admin'))
                         <button type="button" id="delete" data-id="{{$book->id}}" class="btn btn-outline-dark">Vymazať</button>
                         <a href="{{route('edit-book', ['id' => $book->id])}}" class="btn btn-outline-secondary">Upraviť</a>
                         @endif
-                    @endif
                     <h2>{{$book->name}}</h2>
                         <br>
                     <p><strong>Žáner:</strong> {{ $genre ? $genre->name : 'N/A' }}</p>
