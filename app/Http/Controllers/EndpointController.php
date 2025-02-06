@@ -85,7 +85,6 @@ readonly class EndpointController
      */
     public function delete(string $id): array
     {
-        $this->commentProvider->delete($id);
         $success = $this->bookProvider->delete(id: $id);
         return [
             "code" => 200,
@@ -113,16 +112,21 @@ readonly class EndpointController
                 "success" => false,
             ];
         }
-        if (empty($password) || strlen($password) < 3) {
+
+        if (strlen($password) < 5 ||
+            !preg_match('/[A-Z]/', $password) ||
+            !preg_match('/[0-9]/', $password)) {
             return [
                 "code" => 401,
-                "errors" => [['password', 'Heslo musí mať aspoň 3 znaky.']],
+                "errors" => [['password', 'Heslo musí mať aspoň 5 znakov, jedno veľké písmeno a jedno číslo.']],
                 "success" => false,
             ];
         }
 
+
         // Kontrola, či užívateľ existuje
         if ($this->userProvider->getByEmail($email)) {
+            sleep(5);
             return [
                 "code" => 400,
                 "errors" => [['email', 'E-mail je už obsadený.']],
@@ -131,9 +135,19 @@ readonly class EndpointController
         }
 
         if($this->userProvider->getByName($name)) {
+            sleep(5);
             return [
                 "code" => 400,
                 "errors" => [['name', 'Meno je už obsadené.']],
+                "success" => false,
+            ];
+        }
+
+        if (!empty($data['profile_pic']) && !filter_var($data['profile_pic'], FILTER_VALIDATE_URL)) {
+            sleep(5);
+            return [
+                "code" => 401,
+                "errors" => [['profile_pic', 'URL profilovej fotky nie je platná.']],
                 "success" => false,
             ];
         }
@@ -174,20 +188,37 @@ readonly class EndpointController
     }
 
     //delete profile
-    public function deleteProfile(Request $request) {
-        $user = auth()->user();  // Získa prihláseného používateľa
+    public function deleteProfile(int $userId)
+    {
+        $success = $this->userProvider->deleteUserAndRelatedData($userId);
 
-        if ($user) {
-            $user->delete();  // Odstráni profil
-            return response()->json(['message' => 'Profil bol úspešne odstránený.']);
+        if ($success) {
+            return [
+                "code" => 200,
+                "message" => "User was deleted",
+                "success" => $success,
+            ];
         }
-
-        return response()->json(['message' => 'Používateľ neexistuje.'], 404);
+        return [
+            "code" => 500,
+            "message" => "Nastala chyba pri odstraňovaní používateľa.",
+            "success" => $success,
+        ];
     }
 
 
     //edit profile
-
+    public function updateProfile(Request $request, string $id): array
+    {
+        //\Log::info($request->all());
+        $data = $request->get('data');
+        $success = $this->userProvider->update(id: $id, data: $data);
+        return [
+            "code" => 200,
+            "message" => "Profile was updated",
+            "success" => $success,
+        ];
+    }
 
     public function login(Request $request)
     {
@@ -290,7 +321,7 @@ readonly class EndpointController
 
         // Dekóduj JSON zo stringu
         $decodedData = json_decode($rawData, true);
-        Log::debug('Decoded Data:', ['data' => $decodedData]);
+        //Log::debug('Decoded Data:', ['data' => $decodedData]);
 
         // Skontroluj, či sú dáta validné
         if (isset($decodedData['data'])) {
@@ -304,8 +335,8 @@ readonly class EndpointController
             $data = [];
         }
 
-        Log::debug('Request data for adding comment: ', $data);
-        Log::debug('Prijaté dáta:', $request->all());
+        //Log::debug('Request data for adding comment: ', $data);
+        //Log::debug('Prijaté dáta:', $request->all());
         // Ak sú chýbajúce údaje
         if (empty($data['comment']) || empty($data['book_id']) || empty($data['user_id'])) {
             $response = [
@@ -313,7 +344,7 @@ readonly class EndpointController
                 "message" => "Chýbajúce údaje pre komentár.",
                 "success" => false,
             ];
-            Log::debug('Add comment response: ', $response); // Logovanie odpovede
+            //Log::debug('Add comment response: ', $response); // Logovanie odpovede
             return $response;
         }
 
@@ -335,8 +366,17 @@ readonly class EndpointController
      */
     public function updateComment(Request $request, string $id): array
     {
-        $data = $request->get('data');
-        $success = $this->commentProvider->update(id: $id, data: $data);
+        // Validácia dát pre komentár
+        $request->validate([
+            'comment' => 'required|string|max:255', // Príklad validácie na minimálnu dĺžku a formát
+        ]);
+
+        // Získanie dát z požiadavky
+        $data = [
+            'comment' => $request->input('comment'),
+        ];
+
+        $success = $this->commentProvider->update($id, $data);
 
         return [
             "code" => 200,
@@ -344,6 +384,10 @@ readonly class EndpointController
             "success" => $success,
         ];
     }
+
+
+
+
 
     /**
      * Odstránenie komentára

@@ -7,11 +7,9 @@ import {isValidImageUrl} from "../helpers.js";
 export const loginValidator = (data) => {
     /** @type {[string, string][]} */
     const errors = [];
-
     if (!data?.email || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,}$/g.test(data.email)) {
         errors.push(["email", "Nesprávny tvar prihlasovacieho emailu."]);
     }
-
     if (!data?.password?.trim?.()) {
         errors.push(["password", "Musíš zadať heslo."]);
     } else if (data.password.trim().length < 3) {
@@ -37,8 +35,10 @@ export const registerValidator = (data) => {
     }
     if (!data?.password?.trim?.()) {
         errors.push(["password", "Musíš zadať heslo."]);
-    } else if (data.password.trim().length < 3) {
-        errors.push(["password", "Heslo musí mať aspoň 3 znaky."]);
+    } else if (data.password.trim().length < 5 ||
+        !/[A-Z]/.test(data.password) ||
+        !/[0-9]/.test(data.password)) {
+        errors.push(["password", "Heslo musí mať aspoň 5 znakov, jedno veľké písmeno a jedno číslo."]);
     }
     if (data?.profile_pic?.trim?.() && !isValidImageUrl(data.profile_pic)) {
         errors.push(['profile_pic', 'Url obrázku nemá správny tvar.']);
