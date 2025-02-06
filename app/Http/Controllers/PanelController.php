@@ -23,7 +23,12 @@ readonly class PanelController
 
     public function panel(): View|Factory|Application
     {
-        $books = $this->bookService->getBooksByCreator(Auth::id());
+
+        if ( Auth::user()->role === 'admin') {
+            $books = $this->bookService->readAll();}
+        else {
+            $books = $this->bookService->getBooksByCreator(Auth::id());
+        }
         return view('layouts.panel.panel', compact('books'));
     }
 
